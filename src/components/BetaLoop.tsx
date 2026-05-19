@@ -75,7 +75,7 @@ export default function BetaLoop() {
   const [, forceRender] = useState(0)
 
   useAnimationFrame((_, delta) => {
-    const speed = hoverRef.current ? 0.15 : 1
+    const speed = hoverRef.current ? 0 : 1
     orbitRef.current += (delta / ORBIT_MS) * Math.PI * 2 * speed
     cycleRef.current  = (cycleRef.current + (delta / CYCLE_MS) * speed) % 1
     forceRender(n => n + 1)
