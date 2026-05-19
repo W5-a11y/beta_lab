@@ -85,9 +85,10 @@ export default function RobotBlueprint() {
             <circle
               cx="50" cy="50" r={DIAL_R}
               fill="none"
-              stroke="#003262"
+              stroke="#3B82F6"
               strokeWidth="0.25"
-              opacity="0.6"
+              strokeDasharray="2 4"
+              opacity="0.3"
             />
             {/* Tick marks */}
             {Array.from({ length: TICK_COUNT }).map((_, i) => {
@@ -102,7 +103,7 @@ export default function RobotBlueprint() {
                   y1={50 + inner * Math.sin(angle)}
                   x2={50 + outer * Math.cos(angle)}
                   y2={50 + outer * Math.sin(angle)}
-                  stroke="#003262"
+                  stroke="#3B82F6"
                   strokeWidth={isMajor ? '0.4' : '0.2'}
                   opacity={isMajor ? '0.7' : '0.35'}
                 />
@@ -110,9 +111,9 @@ export default function RobotBlueprint() {
             })}
             {/* Cross-hair guides */}
             <line x1="50" y1={50 - DIAL_R - 2} x2="50" y2={50 - DIAL_R + 5}
-              stroke="#003262" strokeWidth="0.3" opacity="0.5" />
+              stroke="#3B82F6" strokeWidth="0.3" opacity="0.5" />
             <line x1="50" y1={50 + DIAL_R - 5} x2="50" y2={50 + DIAL_R + 2}
-              stroke="#003262" strokeWidth="0.3" opacity="0.5" />
+              stroke="#3B82F6" strokeWidth="0.3" opacity="0.5" />
           </svg>
         </motion.div>
 

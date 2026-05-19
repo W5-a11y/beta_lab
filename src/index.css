@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --ca-blue: #FDB515;
-  --ca-gold: #003262;
+  --ca-blue: #3B82F6;
+  --ca-gold: #FDB515;
 }
 
 * {
@@ -17,10 +17,19 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Grid background */
+/* Blue glow text — used on "Human Layer" and status badge */
+.glow-blue-text {
+  color: #3B82F6;
+  text-shadow:
+    0 0 12px rgba(59, 130, 246, 0.7),
+    0 0 28px rgba(59, 130, 246, 0.35),
+    0 0 50px rgba(59, 130, 246, 0.15);
+}
+
+/* Grid background — very faint, PublicAI-style */
 .grid-bg {
   background-image:
-    linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
   background-size: 50px 50px;
 }

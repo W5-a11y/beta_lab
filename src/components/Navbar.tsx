@@ -3,10 +3,7 @@ export default function Navbar() {
     <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 py-4 border-b border-white/10 backdrop-blur-md bg-black/60">
       {/* Logo */}
       <div className="flex items-center gap-3">
-        <div className="w-8 h-8 rounded-sm flex items-center justify-center"
-          style={{ background: '#FDB515' }}>
-          <span className="text-white font-black text-sm tracking-tight">β</span>
-        </div>
+        <img src="/beta.svg" alt="BETA" className="w-8 h-8" />
         <span className="text-white font-semibold text-sm tracking-widest uppercase">
           BETA Robotics Lab
         </span>
