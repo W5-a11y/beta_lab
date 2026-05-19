@@ -1,6 +1,7 @@
 import GlobalAtmosphere from './components/GlobalAtmosphere'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
+import BetaLoop from './components/BetaLoop'
 import ResearchThemes from './components/ResearchThemes'
 
 export default function App() {
@@ -10,6 +11,7 @@ export default function App() {
       <div className="relative z-10">
         <Navbar />
         <Hero />
+        <BetaLoop />
         <ResearchThemes />
       </div>
     </div>

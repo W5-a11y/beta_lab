@@ -97,25 +97,22 @@ export default function ResearchThemes() {
       {/* Card flow */}
       <div className="max-w-7xl mx-auto relative">
 
-        {/* Connector line — behind cards */}
-        <div className="hidden lg:block absolute top-[88px] left-[calc(33.33%-20px)] right-[calc(33.33%-20px)] h-px"
+        {/*
+          Connector line: spans from gap-1 center to gap-2 center.
+          gap-6 = 24px; each col = (100%–48px)/3; gap center = col_w + 12px = 33.33%–4px
+          Line top = 88px = dot center (dot top 82px + radius 6px)
+        */}
+        <div
+          className="hidden lg:block absolute h-px"
           style={{
+            top: '88px',
+            left:  'calc(33.33% - 4px)',
+            right: 'calc(33.33% - 4px)',
             background: 'repeating-linear-gradient(90deg, rgba(59,130,246,0.35) 0px, rgba(59,130,246,0.35) 6px, transparent 6px, transparent 14px)',
           }}
         />
-        {/* Arrow dots on connector */}
-        {[33.5, 66.5].map((pct) => (
-          <div key={pct}
-            className="hidden lg:block absolute top-[82px] w-3 h-3 rounded-full"
-            style={{
-              left: `${pct}%`,
-              background: '#3B82F6',
-              boxShadow: '0 0 8px 2px rgba(59,130,246,0.6)',
-            }}
-          />
-        ))}
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
           {THEMES.map((theme, i) => {
             const isHovered = hovered === theme.id
             return (
@@ -138,6 +135,32 @@ export default function ResearchThemes() {
                     : 'none',
                 }}
               >
+                {/* Edge connector dots — fixed top anchor, card-relative */}
+                {/* right dot: card 0 and card 1 */}
+                {i < 2 && (
+                  <div
+                    className="hidden lg:block absolute w-3 h-3 rounded-full z-10"
+                    style={{
+                      top: '82px',
+                      right: '-19px',
+                      background: '#3B82F6',
+                      boxShadow: '0 0 8px 2px rgba(59,130,246,0.6)',
+                    }}
+                  />
+                )}
+                {/* left dot: card 1 and card 2 */}
+                {i > 0 && (
+                  <div
+                    className="hidden lg:block absolute w-3 h-3 rounded-full z-10"
+                    style={{
+                      top: '82px',
+                      left: '-19px',
+                      background: '#3B82F6',
+                      boxShadow: '0 0 8px 2px rgba(59,130,246,0.6)',
+                    }}
+                  />
+                )}
+
                 {/* Index tag */}
                 <div className="flex items-center justify-between">
                   <span className="font-mono text-[10px] tracking-[0.25em]"
