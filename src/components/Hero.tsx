@@ -41,18 +41,17 @@ export default function Hero() {
           {/* Headline */}
           <h1 className="text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight text-white">
             Building the{' '}
-            <span className="glow-blue-text" style={{ color: '#3B82F6' }}>Human Layer</span>
+            <span style={{ color: '#3B82F6' }}>Data-to-Deployment</span>
             <br />
-            <span style={{ textShadow: '0 0 20px rgba(59,130,246,0.25)' }}>of Robotics.</span>
+            Loop for Embodied AI
           </h1>
 
           {/* Subheadline */}
           <p className="text-base lg:text-lg leading-relaxed max-w-md" style={{ color: 'rgba(255,255,255,0.5)' }}>
-            A closed-loop lab spanning{' '}
-            <span className="text-white/75">Data Annotation</span>,{' '}
-            <span className="text-white/75">World Models</span>, and{' '}
-            <span className="text-white/75">Physical Deployment</span>{' '}
-            on Unitree G1.
+            BETA Robotics Lab connects industry-grade robot data, automated annotation,{' '}
+            <span className="text-white/80 font-medium">world model training</span>,{' '}
+            VLA policy evaluation, and{' '}
+            <span className="text-white/80 font-medium">real-world humanoid deployment</span>.
           </p>
 
           {/* CTA Buttons */}
@@ -68,16 +67,16 @@ export default function Hero() {
           {/* KPI strip */}
           <div className="flex gap-8 pt-4 border-t border-white/8 mt-2">
             {[
-              { val: '300h+', label: 'Dataset' },
-              { val: '80%', label: 'Cost↓' },
-              { val: '24ms', label: 'Inference' },
-              { val: 'H100', label: 'Cluster' },
+              { val: '1,000h+', label: '12-Month Dataset Target' },
+              { val: '80%↓',   label: 'Annotation Cost Reduction' },
+              { val: 'G1',     label: 'Real-World Deployment' },
+              { val: 'H100',   label: 'Training & Inference Cluster' },
             ].map(({ val, label }) => (
               <div key={label} className="flex flex-col gap-1.5">
                 <span className="text-xl font-bold text-white">{val}</span>
                 <span
                   className="text-[9px] tracking-[0.25em] uppercase font-mono"
-                  style={{ color: 'rgba(255,255,255,0.3)' }}
+                  style={{ color: 'rgba(255,255,255,0.4)' }}
                 >
                   {label}
                 </span>
