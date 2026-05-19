@@ -34,7 +34,7 @@ export default function Hero() {
               style={{ background: '#3B82F6' }}
             />
             <span className="text-xs tracking-[0.2em] uppercase font-mono glow-blue-text">
-              EST. 2024 · Berkeley, CA · Seed Round Open
+              EST. 2024 · Berkeley, CA
             </span>
           </div>
 
@@ -48,8 +48,9 @@ export default function Hero() {
 
           {/* Subheadline */}
           <p className="text-base lg:text-lg leading-relaxed max-w-md" style={{ color: 'rgba(255,255,255,0.5)' }}>
-            BETA Robotics Lab connects industry-grade robot data, automated annotation,{' '}
-            <span className="text-white/80 font-medium">world model training</span>,{' '}
+            BETA Robotics Lab connects industry-grade robot data,{' '}
+            <span className="text-white/80 font-medium">automated annotation</span>,{' '}
+            world model training,{' '}
             VLA policy evaluation, and{' '}
             <span className="text-white/80 font-medium">real-world humanoid deployment</span>.
           </p>

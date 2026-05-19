@@ -3,6 +3,7 @@ import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import BetaLoop from './components/BetaLoop'
 import ResearchThemes from './components/ResearchThemes'
+import MoatStack from './components/MoatStack'
 
 export default function App() {
   return (
@@ -13,6 +14,7 @@ export default function App() {
         <Hero />
         <BetaLoop />
         <ResearchThemes />
+        <MoatStack />
       </div>
     </div>
   )
