@@ -128,14 +128,8 @@ export default function Footer() {
       }}/>
       <div className="max-w-6xl mx-auto px-8 pt-16 pb-8">
 
-        {/* 3-column grid */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr 1fr',
-          gap: '0 48px',
-          alignItems: 'start',
-          marginBottom: 48,
-        }}>
+        {/* 3-column grid — stacks to 1 column on mobile */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-x-12" style={{ marginBottom: 48 }}>
 
           {/* ── Left: Mission ── */}
           <div>
@@ -225,9 +219,8 @@ export default function Footer() {
         {/* Bottom bar */}
         <div style={{
           display: 'flex',
-          justifyContent: 'space-between',
+          flexDirection: 'column',
           alignItems: 'center',
-          flexWrap: 'wrap',
           gap: 12,
         }}>
           {/* Copyright */}
@@ -242,11 +235,12 @@ export default function Footer() {
             © 2026 BETA | Berkeley Emerging Technology Association. All rights reserved.
           </p>
 
-          {/* System stat chip — bottom-right */}
+          {/* System stat chip */}
           <div style={{
             display: 'flex',
-            gap: 20,
-            flexShrink: 0,
+            gap: 16,
+            flexWrap: 'wrap',
+            justifyContent: 'center',
           }}>
             {[
               { label: 'LATENCY', val: `${latency}ms` },

@@ -65,6 +65,15 @@ export default function BetaLoop() {
   const inViewRef = useRef<HTMLDivElement>(null)
   const isInView  = useInView(inViewRef, { once: true, margin: '-15%' })
 
+  // Detect mobile — disable 3D tilt on small screens for performance
+  const [isMobile, setIsMobile] = useState(false)
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768)
+    check()
+    window.addEventListener('resize', check)
+    return () => window.removeEventListener('resize', check)
+  }, [])
+
   // Mouse parallax
   const mx = useMotionValue(0)
   const my = useMotionValue(0)
@@ -84,10 +93,10 @@ export default function BetaLoop() {
     forceRender(n => n + 1)
   })
 
-  // Mouse move / leave
+  // Mouse move / leave — desktop only
   useEffect(() => {
     const el = wrapRef.current
-    if (!el) return
+    if (!el || isMobile) return
     const onMove = (e: MouseEvent) => {
       const r = el.getBoundingClientRect()
       mx.set(((e.clientX - r.left) / r.width  - 0.5) * 10)
@@ -100,7 +109,7 @@ export default function BetaLoop() {
       el.removeEventListener('mousemove', onMove)
       el.removeEventListener('mouseleave', onLeave)
     }
-  }, [])
+  }, [isMobile])
 
   // Hover state
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null)
@@ -221,9 +230,9 @@ export default function BetaLoop() {
       </motion.div>
 
       {/* ── SVG orbit ── */}
-      <div ref={inViewRef} style={{ perspective: '1100px', marginTop: 48 }}>
+      <div ref={inViewRef} style={{ perspective: isMobile ? 'none' : '1100px', marginTop: 48 }}>
         <motion.div
-          style={{ rotateX: sY, rotateY: sX }}
+          style={isMobile ? {} : { rotateX: sY, rotateY: sX }}
           initial={{ opacity: 0, scale: 0.88, filter: 'blur(16px)' }}
           animate={isInView
             ? { opacity: 1, scale: 1, filter: 'blur(0px)' }
