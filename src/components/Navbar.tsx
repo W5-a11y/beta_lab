@@ -4,7 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 const NAV_ITEMS = [
   { label: 'HOME',      href: '#hero' },
   { label: 'LOOP',      href: '#loop' },
-  { label: 'COMPANIES', href: '#companies' },
+  { label: 'EDGE',      href: '#companies' },
+  { label: 'ASSETS',    href: '#resources' },
   { label: 'CONTACT',   href: '#contact' },
 ]
 
@@ -16,7 +17,8 @@ export default function Navbar() {
     const SECTION_MAP: { label: string; id: string }[] = [
       { label: 'HOME',      id: 'hero' },
       { label: 'LOOP',      id: 'loop' },
-      { label: 'COMPANIES', id: 'companies' },
+      { label: 'EDGE',      id: 'companies' },
+      { label: 'ASSETS',    id: 'resources' },
       { label: 'CONTACT',   id: 'contact' },
     ]
     const onScroll = () => {

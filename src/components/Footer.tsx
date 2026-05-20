@@ -249,37 +249,6 @@ export default function Footer() {
             © 2026 BETA — Berkeley Emerging Technology Association
           </p>
 
-          {/* Live system metadata strip */}
-          <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap' }}>
-            {[
-              { label: 'LATENCY',       val: `${latency}ms` },
-              { label: 'UPTIME',        val: uptime },
-              { label: 'PROTOCOL',      val: 'Embodied-AI-v1.0' },
-              { label: 'STATUS',        val: 'Active' },
-            ].map(({ label, val }) => (
-              <span key={label} style={{
-                fontFamily:    "'Roboto Mono',monospace",
-                fontSize:      8,
-                letterSpacing: '0.08em',
-                color:         'rgba(26,26,26,0.20)',
-                whiteSpace:    'nowrap' as const,
-              }}>
-                <span style={{ color: 'rgba(26,26,26,0.30)' }}>{label}:</span>{' '}
-                <span style={{ color: 'rgba(30,58,138,0.35)' }}>{val}</span>
-              </span>
-            ))}
-            {ts && (
-              <span style={{
-                fontFamily:    "'Roboto Mono',monospace",
-                fontSize:      8,
-                letterSpacing: '0.06em',
-                color:         'rgba(26,26,26,0.16)',
-                whiteSpace:    'nowrap' as const,
-              }}>
-                {ts}
-              </span>
-            )}
-          </div>
         </div>
       </div>
     </footer>
