@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion'
 const NAV_ITEMS = [
   { label: 'HOME',      href: '#hero' },
   { label: 'LOOP',      href: '#loop' },
-  { label: 'PILLARS',   href: '#pillars' },
   { label: 'COMPANIES', href: '#companies' },
   { label: 'CONTACT',   href: '#contact' },
 ]
@@ -17,7 +16,6 @@ export default function Navbar() {
     const SECTION_MAP: { label: string; id: string }[] = [
       { label: 'HOME',      id: 'hero' },
       { label: 'LOOP',      id: 'loop' },
-      { label: 'PILLARS',   id: 'pillars' },
       { label: 'COMPANIES', id: 'companies' },
       { label: 'CONTACT',   id: 'contact' },
     ]

@@ -2,9 +2,10 @@ import { motion } from 'framer-motion'
 
 interface Props {
   href: string
+  color?: string
 }
 
-export default function SectionArrow({ href }: Props) {
+export default function SectionArrow({ href, color = 'rgba(255,255,255,0.28)' }: Props) {
   return (
     <motion.a
       href={href}
@@ -34,7 +35,7 @@ export default function SectionArrow({ href }: Props) {
       >
         <path
           d="M1 1L9 9L17 1"
-          stroke="rgba(255,255,255,0.28)"
+          stroke={color}
           strokeWidth="1"
           strokeLinecap="round"
           strokeLinejoin="round"

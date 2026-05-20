@@ -3,7 +3,6 @@ import ConnectiveLine from './components/ConnectiveLine'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import BetaLoop from './components/BetaLoop'
-import ResearchThemes from './components/ResearchThemes'
 import MoatStack from './components/MoatStack'
 import Footer from './components/Footer'
 import Opening from './components/Opening'
@@ -19,7 +18,6 @@ export default function App() {
         <Navbar />
         <Hero />
         <BetaLoop />
-        <ResearchThemes />
         <MoatStack />
         <Footer />
       </div>

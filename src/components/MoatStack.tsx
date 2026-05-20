@@ -6,72 +6,77 @@ import SectionArrow from './SectionArrow'
 
 const LAYERS = [
   {
-    rank: 'L03',
-    label: 'BETA Robotics Lab',
-    type: 'INTEGRATED INTELLIGENCE STACK',
+    rank:     'L03',
+    type:     'INTEGRATED INTELLIGENCE STACK',
+    label:    'BETA Robotics Lab',
+    caption:  'The only entity combining real-world humanoid data, VLM-automated annotation, and closed-loop world model training.',
     details: [
-      { key: 'Primary Output', val: 'Models / Benchmarks' },
+      { key: 'Primary Output', val: 'Models / Benchmarks'   },
       { key: 'Data Source',    val: 'Eastworld Partnership' },
-      { key: 'Validation',     val: 'G1 Humanoid Loop' },
+      { key: 'Validation',     val: 'G1 Humanoid Loop'      },
     ],
-    // pyramid: top layer — brushed gold
-    topBg:    'linear-gradient(135deg, rgba(212,175,55,0.22) 0%, rgba(212,175,55,0.10) 100%)',
-    frontBg:  'rgba(212,175,55,0.32)',
-    border:   'rgba(212,175,55,0.55)',
-    topGlow:  '0 -1px 14px rgba(212,175,55,0.35)',
-    rankColor:'rgba(212,175,55,0.9)',
-    typeColor:'rgba(212,175,55,0.65)',
-    guideColor:'rgba(212,175,55,0.2)',
+    // Glassmorphism colors
+    cardBg:       'rgba(186,230,253,0.52)',
+    cardBorder:   'rgba(255,255,255,0.72)',
+    cardShadow:   '0 8px 32px rgba(59,130,246,0.10), 0 2px 8px rgba(0,0,0,0.05)',
+    accentColor:  '#1E3A8A',
+    accentLight:  'rgba(30,58,138,0.12)',
+    rankColor:    '#1E40AF',
+    blurPx:       14,
+    // Stack position: front (bottom-left)
+    stackX: 0,
+    stackY: 44,
+    zIndex: 3,
   },
   {
-    rank: 'L02',
-    label: 'Data Service Providers',
-    type: 'DATA SCALING VENDORS',
+    rank:     'L02',
+    type:     'DATA SCALING VENDORS',
+    label:    'Data Service Providers',
+    caption:  'Human-in-the-loop annotation pipelines. Proprietary data services without model intelligence.',
     details: [
       { key: 'Method',     val: 'Human-in-the-loop annotation' },
-      { key: 'Capability', val: 'Proprietary data services' },
-      { key: 'Limitation', val: 'No model intelligence' },
+      { key: 'Capability', val: 'Proprietary data services'    },
+      { key: 'Limitation', val: 'No model intelligence'        },
     ],
-    // pyramid: mid — translucent deep blue
-    topBg:    'linear-gradient(135deg, rgba(37,99,235,0.18) 0%, rgba(59,130,246,0.08) 100%)',
-    frontBg:  'rgba(59,130,246,0.22)',
-    border:   'rgba(59,130,246,0.35)',
-    topGlow:  'none',
-    rankColor:'rgba(147,197,253,1)',
-    typeColor:'rgba(147,197,253,0.85)',
-    guideColor:'rgba(59,130,246,0.15)',
+    cardBg:       'rgba(245,245,220,0.58)',
+    cardBorder:   'rgba(255,255,255,0.65)',
+    cardShadow:   '0 6px 24px rgba(0,0,0,0.06), 0 2px 6px rgba(0,0,0,0.04)',
+    accentColor:  '#78716C',
+    accentLight:  'rgba(120,113,108,0.10)',
+    rankColor:    '#92400E',
+    blurPx:       10,
+    stackX: 22,
+    stackY: 22,
+    zIndex: 2,
   },
   {
-    rank: 'L01',
-    label: 'Conventional Academic Labs',
-    type: 'THEORETICAL FOUNDATION',
+    rank:     'L01',
+    type:     'THEORETICAL FOUNDATION',
+    label:    'Conventional Academic Labs',
+    caption:  'Simulation-heavy experimentation. Fragmented data sources. Academic publication focus.',
     details: [
-      { key: 'Output',     val: 'Academic papers' },
+      { key: 'Output',     val: 'Academic papers'              },
       { key: 'Method',     val: 'Simulation-heavy experiments' },
-      { key: 'Limitation', val: 'Fragmented data sources' },
+      { key: 'Limitation', val: 'Fragmented data sources'      },
     ],
-    // pyramid: base — matte dark gray
-    topBg:    'linear-gradient(135deg, rgba(60,60,65,0.35) 0%, rgba(40,40,44,0.20) 100%)',
-    frontBg:  'rgba(55,55,60,0.45)',
-    border:   'rgba(255,255,255,0.08)',
-    topGlow:  'none',
-    rankColor:'rgba(255,255,255,0.70)',
-    typeColor:'rgba(255,255,255,0.55)',
-    guideColor:'rgba(255,255,255,0.07)',
+    cardBg:       'rgba(240,240,238,0.58)',
+    cardBorder:   'rgba(255,255,255,0.55)',
+    cardShadow:   '0 4px 18px rgba(0,0,0,0.05), 0 1px 4px rgba(0,0,0,0.04)',
+    accentColor:  '#57534E',
+    accentLight:  'rgba(87,83,78,0.08)',
+    rankColor:    '#78716C',
+    blurPx:       8,
+    // Stack position: back (top-right)
+    stackX: 44,
+    stackY: 0,
+    zIndex: 1,
   },
 ] as const
 
-// Row heights shared between pyramid slabs and right text rows
-const ROW_HEIGHTS = [200, 160, 130]
-// Total pyramid height = 490px
-// Taper: top edge 18% inset each side → bottom edge 1% inset each side
-// Boundaries at cumulative h fractions: 0 / 0.408 / 0.735 / 1.0
-// offset(h) = 18 - 17*h  →  insets: 18% / 11.1% / 5.5% / 1%
-const PYRAMID_CLIPS = [
-  'polygon(18% 0%, 82% 0%, 88.9% 100%, 11.1% 100%)',
-  'polygon(11.1% 0%, 88.9% 0%, 94.5% 100%, 5.5% 100%)',
-  'polygon(5.5% 0%, 94.5% 0%, 99% 100%, 1% 100%)',
-]
+// Card dimensions within the stack container
+const CARD_W = 460
+const CARD_H = 182
+const STACK_PAD = 44   // extra container space for offsets
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
@@ -81,216 +86,169 @@ export default function MoatStack() {
   const isInView   = useInView(sectionRef, { once: true, margin: '-12%' })
 
   return (
-    <section ref={sectionRef} id="companies" className="relative w-full bg-black py-32 overflow-hidden">
-      {/* Corner glows — top-right */}
-      <div className="pointer-events-none absolute -top-60 -right-60 w-[900px] h-[900px] rounded-full" style={{
-        background: 'radial-gradient(circle, rgba(0,50,98,0.28) 0%, transparent 65%)',
-        filter: 'blur(90px)',
-      }}/>
-      {/* Corner glows — bottom-left */}
-      <div className="pointer-events-none absolute -bottom-60 -left-60 w-[800px] h-[800px] rounded-full" style={{
-        background: 'radial-gradient(circle, rgba(0,50,98,0.22) 0%, transparent 65%)',
-        filter: 'blur(100px)',
-      }}/>
-      <style>{`
-        .pyramid-slab {
-          position: relative;
-          transition: transform 0.35s cubic-bezier(0.22,1,0.36,1);
-          cursor: default;
-        }
-        .pyramid-slab.lifted { transform: translateY(-10px); }
-      `}</style>
+    <section
+      ref={sectionRef}
+      id="companies"
+      className="relative w-full overflow-hidden"
+      style={{ background: '#F7F7F2', paddingTop: 96, paddingBottom: 96 }}
+    >
+      {/* Subtle background texture so backdrop-filter has something to blur */}
+      <svg
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 w-full h-full"
+        style={{ opacity: 0.035 }}
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <defs>
+          <pattern id="dot-grid" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
+            <circle cx="1" cy="1" r="1" fill="#1A1A1A"/>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#dot-grid)"/>
+      </svg>
 
-      {/* Section header */}
+      {/* Warm center glow */}
+      <div className="pointer-events-none absolute inset-0" style={{
+        background: 'radial-gradient(ellipse 70% 50% at 65% 55%, rgba(186,230,253,0.14) 0%, transparent 70%)',
+      }}/>
+
+      {/* ── Section header ── */}
       <motion.div
-        className="max-w-6xl mx-auto px-8 mb-20 text-center"
-        initial={{ opacity: 0, y: -20 }}
+        className="max-w-6xl mx-auto px-8 mb-18 text-center"
+        style={{ marginBottom: 72 }}
+        initial={{ opacity: 0, y: -16 }}
         animate={isInView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
       >
-        <p className="font-mono text-[10px] tracking-[0.3em] uppercase mb-4"
-           style={{ color: 'rgba(59,130,246,0.5)' }}>
+        <p className="font-mono text-[10px] tracking-[0.35em] uppercase mb-4"
+          style={{ color: 'rgba(26,26,26,0.32)' }}>
           [ 02 / RESEARCH_MOAT ]
         </p>
-        <motion.h2
-          className="text-4xl lg:text-5xl font-extrabold tracking-tight text-white mb-4"
-          initial={{ opacity: 0, y: 14 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.65, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
+        <h2
+          className="text-4xl lg:text-5xl font-extrabold tracking-tight mb-4"
+          style={{ color: '#1A1A1A' }}
         >
-          A New Category Between Research Labs and Data Companies
-        </motion.h2>
-        <motion.p
-          className="text-sm max-w-lg mx-auto"
-          style={{ color: 'rgba(255,255,255,0.4)' }}
-          initial={{ opacity: 0, y: 8 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.22, ease: [0.22, 1, 0.36, 1] }}
-        >
+          A New Category Between<br/>Research Labs and Data Companies
+        </h2>
+        <p className="text-sm max-w-lg mx-auto"
+          style={{ color: 'rgba(26,26,26,0.42)', fontFamily: 'Inter, system-ui, sans-serif' }}>
           One integrated infrastructure that others cannot replicate.
-        </motion.p>
+        </p>
       </motion.div>
 
-      {/* Main layout: pyramid left + text right */}
-      <motion.div
-        className="max-w-6xl mx-auto px-8"
-        initial={{ opacity: 0, y: 30 }}
-        animate={isInView ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-      >
-        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 0 }}>
+      {/* ── Main two-column layout ── */}
+      <div className="max-w-6xl mx-auto px-8">
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 56 }}>
 
-          {/* ── Left: True pyramid (40%) ── */}
-          <div style={{ width: '40%', flexShrink: 0 }}>
-            {LAYERS.map((layer, i) => (
-              <div
-                key={layer.rank}
-                className={`pyramid-slab${active === i ? ' lifted' : ''}`}
-                style={{
-                  width: '100%',
-                  height: ROW_HEIGHTS[i],
-                  position: 'relative',
-                  clipPath: PYRAMID_CLIPS[i],
-                  cursor: 'default',
-                }}
-                onMouseEnter={() => setActive(i)}
-                onMouseLeave={() => setActive(null)}
-              >
-                {/* Fill face */}
-                <div style={{
-                  position: 'absolute', inset: 0,
-                  background: layer.topBg,
-                  boxShadow: layer.topGlow,
-                }}/>
+          {/* ── LEFT: Text descriptions ── */}
+          <div style={{ flex: '0 0 42%', minWidth: 0, paddingTop: 24 }}>
+            {LAYERS.map((layer, i) => {
+              const isActive = active === i
+              return (
+                <motion.div
+                  key={layer.rank}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={isInView ? { opacity: 1, x: 0 } : {}}
+                  transition={{ duration: 0.6, delay: 0.2 + i * 0.12, ease: [0.22, 1, 0.36, 1] }}
+                  onMouseEnter={() => setActive(i)}
+                  onMouseLeave={() => setActive(null)}
+                  style={{
+                    paddingTop: 22,
+                    paddingBottom: 22,
+                    paddingLeft: 16,
+                    borderLeft: `2px solid ${isActive ? layer.accentColor : 'rgba(26,26,26,0.10)'}`,
+                    marginBottom: i < LAYERS.length - 1 ? 8 : 0,
+                    cursor: 'default',
+                    transition: 'border-color 0.3s ease',
+                  }}
+                >
+                  {/* Rank + type row */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+                    <span style={{
+                      fontFamily:    "'Roboto Mono','JetBrains Mono',monospace",
+                      fontSize:      11,
+                      fontWeight:    800,
+                      letterSpacing: '0.14em',
+                      color:         layer.rankColor,
+                    }}>
+                      {layer.rank}
+                    </span>
+                    <span style={{
+                      width: 16, height: 1,
+                      background: 'rgba(26,26,26,0.18)',
+                      flexShrink: 0,
+                    }}/>
+                    <span style={{
+                      fontFamily:    "'Roboto Mono',monospace",
+                      fontSize:      8,
+                      fontWeight:    600,
+                      letterSpacing: '0.18em',
+                      color:         'rgba(26,26,26,0.35)',
+                      textTransform: 'uppercase' as const,
+                    }}>
+                      {layer.type}
+                    </span>
+                  </div>
 
-                {/* Bottom depth shadow */}
-                <div style={{
-                  position: 'absolute', bottom: 0, left: 0, right: 0, height: '35%',
-                  background: 'linear-gradient(to bottom, transparent, rgba(0,0,0,0.45))',
-                  pointerEvents: 'none',
-                }}/>
-
-                {/* Border outline — inset via box-shadow since clip-path hides border */}
-                <div style={{
-                  position: 'absolute', inset: 0,
-                  boxShadow: `inset 0 0 0 1px ${layer.border}`,
-                }}/>
-
-                {/* Top highlight for L03 */}
-                {i === 0 && (
-                  <div style={{
-                    position: 'absolute',
-                    top: 8, left: '25%', right: '25%', height: 1,
-                    background: 'linear-gradient(to right, transparent, rgba(212,175,55,0.7), transparent)',
-                  }}/>
-                )}
-
-                {/* Rank label */}
-                <div style={{
-                  position: 'absolute', inset: 0,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                }}>
-                  <span style={{
-                    fontFamily: 'monospace',
-                    fontSize: 13,
-                    fontWeight: 700,
-                    letterSpacing: '0.2em',
-                    color: layer.rankColor,
-                  }}>
-                    {layer.rank}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* ── Right: Text content (60%) ── */}
-          <div style={{ width: '60%', display: 'flex', flexDirection: 'column' }}>
-            {LAYERS.map((layer, i) => (
-              <div
-                key={layer.rank}
-                style={{
-                  height: ROW_HEIGHTS[i],
-                  display: 'flex',
-                  alignItems: 'center',
-                  position: 'relative',
-                  paddingLeft: 40,
-                  paddingRight: 8,
-                }}
-                onMouseEnter={() => setActive(i)}
-                onMouseLeave={() => setActive(null)}
-              >
-                {/* Horizontal guide line connecting to pyramid */}
-                <div style={{
-                  position: 'absolute',
-                  left: 0,
-                  top: '50%',
-                  width: 36,
-                  height: 1,
-                  background: layer.guideColor,
-                  pointerEvents: 'none',
-                }}/>
-
-                {/* Text block */}
-                <div style={{ flex: 1 }}>
-                  {/* Type label */}
-                  <p style={{
-                    fontFamily: 'monospace',
-                    fontSize: 12,
-                    fontWeight: 700,
-                    letterSpacing: '0.18em',
-                    color: layer.typeColor,
-                    marginBottom: 12,
-                  }}>
-                    {layer.type}
-                  </p>
-
-                  {/* Label — always visible */}
+                  {/* Layer title */}
                   <h3 style={{
-                    fontSize: i === 0 ? 26 : i === 1 ? 21 : 17,
-                    fontWeight: 800,
-                    letterSpacing: '-0.02em',
-                    color: `rgba(255,255,255,${i === 0 ? 1 : i === 1 ? 0.85 : 0.65})`,
-                    marginBottom: 0,
-                    lineHeight: 1.15,
+                    fontFamily:    "Inter,'Helvetica Neue',system-ui,sans-serif",
+                    fontSize:      i === 0 ? 20 : i === 1 ? 17 : 15,
+                    fontWeight:    700,
+                    letterSpacing: '-0.01em',
+                    color:         isActive ? '#1A1A1A' : 'rgba(26,26,26,0.72)',
+                    marginBottom:  6,
+                    lineHeight:    1.25,
+                    transition:    'color 0.25s ease',
                   }}>
                     {layer.label}
                   </h3>
 
-                  {/* Details — only on hover */}
+                  {/* Caption */}
+                  <p style={{
+                    fontFamily:    "Inter,system-ui,sans-serif",
+                    fontSize:      11,
+                    lineHeight:    1.65,
+                    color:         'rgba(26,26,26,0.42)',
+                    margin:        0,
+                  }}>
+                    {layer.caption}
+                  </p>
+
+                  {/* Details on hover */}
                   <AnimatePresence>
-                    {active === i && (
+                    {isActive && (
                       <motion.div
-                        key="details"
                         initial={{ opacity: 0, y: 6 }}
                         animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 4 }}
+                        exit={{ opacity: 0, y: 4, transition: { duration: 0.14 } }}
                         transition={{ duration: 0.22, ease: 'easeOut' }}
-                        style={{ marginTop: 18, display: 'flex', flexDirection: 'column', gap: 10 }}
+                        style={{ marginTop: 14, display: 'flex', flexDirection: 'column', gap: 7 }}
                       >
                         {layer.details.map(({ key, val }) => (
-                          <div key={key} style={{ display: 'flex', alignItems: 'baseline', gap: 10 }}>
+                          <div key={key} style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
                             <span style={{
-                              fontFamily: 'monospace',
-                              fontSize: 12,
-                              fontWeight: 600,
-                              color: layer.typeColor,
-                              flexShrink: 0,
-                              letterSpacing: '0.05em',
+                              fontFamily:    "'Roboto Mono',monospace",
+                              fontSize:      9,
+                              fontWeight:    700,
+                              letterSpacing: '0.10em',
+                              color:         layer.accentColor,
+                              flexShrink:    0,
+                              textTransform: 'uppercase' as const,
                             }}>
                               {key}
                             </span>
                             <span style={{
                               fontFamily: 'monospace',
-                              fontSize: 12,
-                              color: 'rgba(255,255,255,0.3)',
+                              fontSize:   9,
+                              color:      'rgba(26,26,26,0.28)',
                             }}>
                               →
                             </span>
                             <span style={{
-                              fontFamily: 'monospace',
-                              fontSize: 12,
-                              color: 'rgba(255,255,255,0.9)',
+                              fontFamily:    "'Roboto Mono',monospace",
+                              fontSize:      10,
+                              color:         '#1A1A1A',
                               letterSpacing: '0.02em',
                             }}>
                               {val}
@@ -300,37 +258,194 @@ export default function MoatStack() {
                       </motion.div>
                     )}
                   </AnimatePresence>
-                </div>
-              </div>
-            ))}
+                </motion.div>
+              )
+            })}
+
+            {/* Axis label */}
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: 10,
+              marginTop: 32, opacity: 0.28,
+            }}>
+              <div style={{ height: 1, width: 32, background: '#1A1A1A' }}/>
+              <span style={{
+                fontFamily:    "'Roboto Mono',monospace",
+                fontSize:      7,
+                letterSpacing: '0.22em',
+                color:         '#1A1A1A',
+                textTransform: 'uppercase' as const,
+              }}>
+                CAPABILITY DEPTH →
+              </span>
+            </div>
+          </div>
+
+          {/* ── RIGHT: Isometric stacked glass cards ── */}
+          <div style={{ flex: '1 1 0%', display: 'flex', justifyContent: 'center', paddingTop: 0 }}>
+            {/* Stack container */}
+            <div style={{
+              position:   'relative',
+              width:      CARD_W + STACK_PAD,
+              height:     CARD_H + STACK_PAD,
+              flexShrink: 0,
+            }}>
+              {LAYERS.map((layer, i) => {
+                const isActive = active === i
+                const isDimmed = active !== null && !isActive
+
+                return (
+                  <motion.div
+                    key={layer.rank}
+                    initial={{ opacity: 0, y: 40 }}
+                    animate={isInView ? { opacity: 1, y: 0 } : {}}
+                    transition={{
+                      duration: 0.75,
+                      delay:    0.35 + (LAYERS.length - 1 - i) * 0.15,
+                      ease:     [0.22, 1, 0.36, 1],
+                    }}
+                    onMouseEnter={() => setActive(i)}
+                    onMouseLeave={() => setActive(null)}
+                    style={{
+                      position:   'absolute',
+                      left:       layer.stackX,
+                      top:        layer.stackY,
+                      width:      CARD_W,
+                      height:     CARD_H,
+                      zIndex:     layer.zIndex,
+                      cursor:     'default',
+                    }}
+                  >
+                    <motion.div
+                      animate={{
+                        y:       isActive ? -14 : 0,
+                        opacity: isDimmed ? 0.52 : 1,
+                        scale:   isActive ? 1.012 : 1,
+                      }}
+                      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                      style={{
+                        width:              '100%',
+                        height:             '100%',
+                        background:         layer.cardBg,
+                        backdropFilter:     `blur(${layer.blurPx}px)`,
+                        WebkitBackdropFilter: `blur(${layer.blurPx}px)`,
+                        border:             `1px solid ${layer.cardBorder}`,
+                        borderRadius:       6,
+                        boxShadow:          isActive
+                          ? `${layer.cardShadow}, 0 20px 60px rgba(0,0,0,0.10)`
+                          : layer.cardShadow,
+                        padding:            '22px 26px',
+                        display:            'flex',
+                        flexDirection:      'column',
+                        justifyContent:     'space-between',
+                        transition:         'box-shadow 0.35s ease',
+                        // Inner top highlight
+                        outline:            isActive
+                          ? `1px solid ${layer.cardBorder}`
+                          : '1px solid transparent',
+                      }}
+                    >
+                      {/* Card top: rank + type */}
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                          <span style={{
+                            fontFamily:    "'Roboto Mono','JetBrains Mono',monospace",
+                            fontSize:      12,
+                            fontWeight:    800,
+                            letterSpacing: '0.14em',
+                            color:         layer.rankColor,
+                          }}>
+                            {layer.rank}
+                          </span>
+                          <span style={{
+                            fontFamily:    "'Roboto Mono',monospace",
+                            fontSize:      8,
+                            letterSpacing: '0.16em',
+                            color:         'rgba(26,26,26,0.38)',
+                            textTransform: 'uppercase' as const,
+                          }}>
+                            {layer.type}
+                          </span>
+                        </div>
+
+                        {/* Accent dot */}
+                        <div style={{
+                          width:  8,
+                          height: 8,
+                          borderRadius: '50%',
+                          background: layer.accentLight,
+                          border: `1px solid ${layer.accentColor}`,
+                          opacity: 0.7,
+                        }}/>
+                      </div>
+
+                      {/* Card label */}
+                      <div>
+                        <h3 style={{
+                          fontFamily:    "Inter,'Helvetica Neue',system-ui,sans-serif",
+                          fontSize:      i === 0 ? 22 : i === 1 ? 18 : 15,
+                          fontWeight:    700,
+                          letterSpacing: '-0.015em',
+                          color:         '#1A1A1A',
+                          marginBottom:  8,
+                          lineHeight:    1.2,
+                        }}>
+                          {layer.label}
+                        </h3>
+
+                        {/* Bottom rule */}
+                        <div style={{
+                          height:     1,
+                          background: `linear-gradient(to right, ${layer.accentColor}28, transparent)`,
+                          marginBottom: 10,
+                        }}/>
+
+                        {/* Key detail always visible */}
+                        <div style={{ display: 'flex', gap: 16 }}>
+                          {layer.details.slice(0, 2).map(({ key, val }) => (
+                            <div key={key}>
+                              <div style={{
+                                fontFamily:    "'Roboto Mono',monospace",
+                                fontSize:      7.5,
+                                fontWeight:    700,
+                                letterSpacing: '0.12em',
+                                color:         layer.accentColor,
+                                opacity:       0.65,
+                                textTransform: 'uppercase' as const,
+                                marginBottom:  2,
+                              }}>
+                                {key}
+                              </div>
+                              <div style={{
+                                fontFamily:    "Inter,system-ui,sans-serif",
+                                fontSize:      10,
+                                color:         'rgba(26,26,26,0.70)',
+                                letterSpacing: '0.01em',
+                              }}>
+                                {val}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </motion.div>
+                  </motion.div>
+                )
+              })}
+            </div>
           </div>
         </div>
+      </div>
 
-        {/* Bottom axis label */}
-        <div style={{
-          display: 'flex', alignItems: 'center', gap: 12,
-          marginTop: 32, opacity: 0.18,
-        }}>
-          <div style={{ height: 1, flexGrow: 1, background: 'rgba(255,255,255,0.15)' }}/>
-          <span style={{
-            fontFamily: 'monospace', fontSize: 7,
-            letterSpacing: '0.22em', color: 'rgba(255,255,255,0.6)',
-          }}>
-            CAPABILITY DEPTH →
-          </span>
-        </div>
-      </motion.div>
-
-      {/* Bottom gradient fade */}
+      {/* Bottom fade */}
       <div style={{
-        position: 'absolute', bottom: 0, left: 0, right: 0, height: 120,
-        background: 'linear-gradient(to bottom, transparent, #000)',
+        position: 'absolute', bottom: 0, left: 0, right: 0, height: 80,
+        background: 'linear-gradient(to bottom, transparent, #F7F7F2)',
         pointerEvents: 'none', zIndex: 5,
       }}/>
 
       {/* Exit arrow */}
-      <div style={{ display: 'flex', justifyContent: 'center', marginTop: 40, position: 'relative', zIndex: 10 }}>
-        <SectionArrow href="#contact" />
+      <div style={{ display: 'flex', justifyContent: 'center', marginTop: 64, position: 'relative', zIndex: 10 }}>
+        <SectionArrow href="#contact" color="rgba(26,26,26,0.25)" />
       </div>
     </section>
   )
