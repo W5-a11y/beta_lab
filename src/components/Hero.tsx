@@ -47,7 +47,7 @@ export default function Hero() {
           </h1>
 
           {/* Subheadline */}
-          <p className="text-base lg:text-lg leading-relaxed max-w-md" style={{ color: 'rgba(255,255,255,0.5)' }}>
+          <p className="text-base lg:text-lg leading-relaxed max-w-md" style={{ color: 'rgba(255,255,255,0.6)' }}>
             BETA Robotics Lab connects industry-grade robot data,{' '}
             <span className="text-white/80 font-medium">automated annotation</span>,{' '}
             world model training,{' '}
@@ -144,7 +144,7 @@ export default function Hero() {
                 <span className="text-xl font-bold text-white">{val}</span>
                 <span
                   className="text-[9px] tracking-[0.25em] uppercase font-mono"
-                  style={{ color: 'rgba(255,255,255,0.4)' }}
+                  style={{ color: 'rgba(255,255,255,0.5)' }}
                 >
                   {label}
                 </span>

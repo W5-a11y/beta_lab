@@ -187,6 +187,16 @@ export default function BetaLoop() {
       <div className="pointer-events-none absolute inset-0" style={{
         background: 'radial-gradient(ellipse 60% 40% at 50% 55%, rgba(30,58,138,0.18) 0%, transparent 70%)',
       }}/>
+      {/* Corner glows — top-right */}
+      <div className="pointer-events-none absolute -top-60 -right-60 w-[900px] h-[900px] rounded-full" style={{
+        background: 'radial-gradient(circle, rgba(0,50,98,0.28) 0%, transparent 65%)',
+        filter: 'blur(90px)',
+      }}/>
+      {/* Corner glows — bottom-left */}
+      <div className="pointer-events-none absolute -bottom-60 -left-60 w-[800px] h-[800px] rounded-full" style={{
+        background: 'radial-gradient(circle, rgba(0,50,98,0.22) 0%, transparent 65%)',
+        filter: 'blur(100px)',
+      }}/>
 
       {/* Header */}
       <div className="absolute top-16 left-0 right-0 flex flex-col items-center z-20 pointer-events-none">
@@ -197,7 +207,7 @@ export default function BetaLoop() {
         <h2 className="mt-4 text-3xl lg:text-4xl font-extrabold tracking-tight text-white">
           The BETA Loop
         </h2>
-        <p className="mt-3 text-sm max-w-md text-center" style={{ color: 'rgba(255,255,255,0.38)' }}>
+        <p className="mt-3 text-sm max-w-md text-center" style={{ color: 'rgba(255,255,255,0.5)' }}>
           A closed-loop flywheel — from real-world data collection to deployed policy and back.
         </p>
       </div>

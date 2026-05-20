@@ -111,7 +111,21 @@ export default function Footer() {
   const { latency, uptime, ts } = useLiveStats()
 
   return (
-    <footer id="contact" style={{ background: '#050505', borderTop: '1px solid rgba(255,255,255,0.07)' }}>
+    <footer id="contact" style={{ background: '#050505', borderTop: '1px solid rgba(255,255,255,0.07)', position: 'relative', overflow: 'hidden' }}>
+      {/* Corner glow — top-right */}
+      <div style={{
+        position: 'absolute', top: -200, right: -200, width: 600, height: 600,
+        borderRadius: '50%', pointerEvents: 'none',
+        background: 'radial-gradient(circle, rgba(0,50,98,0.22) 0%, transparent 65%)',
+        filter: 'blur(80px)',
+      }}/>
+      {/* Corner glow — bottom-left */}
+      <div style={{
+        position: 'absolute', bottom: -200, left: -200, width: 600, height: 600,
+        borderRadius: '50%', pointerEvents: 'none',
+        background: 'radial-gradient(circle, rgba(0,50,98,0.18) 0%, transparent 65%)',
+        filter: 'blur(90px)',
+      }}/>
       <div className="max-w-6xl mx-auto px-8 pt-16 pb-8">
 
         {/* 3-column grid */}
@@ -132,7 +146,7 @@ export default function Footer() {
                 fontFamily: 'monospace',
                 fontSize: 9,
                 letterSpacing: '0.18em',
-                color: 'rgba(255,255,255,0.2)',
+                color: 'rgba(255,255,255,0.5)',
                 verticalAlign: 'middle',
               }}>
                 ROBOTICS LAB
@@ -157,7 +171,7 @@ export default function Footer() {
               fontSize: 9,
               fontWeight: 700,
               letterSpacing: '0.22em',
-              color: 'rgba(255,255,255,0.25)',
+              color: 'rgba(255,255,255,0.4)',
               marginBottom: 18,
             }}>
               [ CONTACT_ACCESS ]
@@ -170,7 +184,7 @@ export default function Footer() {
 
               <p style={{
                 fontSize: 12,
-                color: 'rgba(255,255,255,0.28)',
+                color: 'rgba(255,255,255,0.4)',
                 lineHeight: 1.6,
               }}>
                 Founded by students from<br />UC Berkeley and Stanford.
@@ -185,7 +199,7 @@ export default function Footer() {
               fontSize: 9,
               fontWeight: 700,
               letterSpacing: '0.22em',
-              color: 'rgba(255,255,255,0.25)',
+              color: 'rgba(255,255,255,0.4)',
               marginBottom: 20,
             }}>
               [ CONNECT ]
@@ -221,7 +235,7 @@ export default function Footer() {
             fontFamily: 'monospace',
             fontSize: 10,
             letterSpacing: '0.18em',
-            color: 'rgba(255,255,255,0.18)',
+            color: 'rgba(255,255,255,0.35)',
             flex: 1,
             textAlign: 'center',
           }}>

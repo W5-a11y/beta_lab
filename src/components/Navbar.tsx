@@ -96,38 +96,6 @@ export default function Navbar() {
         })}
       </div>
 
-      {/* CTA — gold outline button */}
-      <button
-        style={{
-          padding: '7px 18px',
-          fontSize: 11,
-          fontFamily: 'monospace',
-          fontWeight: 700,
-          letterSpacing: '0.14em',
-          textTransform: 'uppercase',
-          color: 'rgba(212,175,55,0.9)',
-          background: 'transparent',
-          border: '1px solid rgba(212,175,55,0.45)',
-          borderRadius: 0,
-          cursor: 'pointer',
-          transition: 'border-color 0.18s, color 0.18s, box-shadow 0.18s',
-          flexShrink: 0,
-        }}
-        onMouseEnter={e => {
-          const el = e.currentTarget
-          el.style.borderColor = 'rgba(212,175,55,0.85)'
-          el.style.color = 'rgba(212,175,55,1)'
-          el.style.boxShadow = '0 0 12px rgba(212,175,55,0.2)'
-        }}
-        onMouseLeave={e => {
-          const el = e.currentTarget
-          el.style.borderColor = 'rgba(212,175,55,0.45)'
-          el.style.color = 'rgba(212,175,55,0.9)'
-          el.style.boxShadow = 'none'
-        }}
-      >
-        [ Book a Demo ]
-      </button>
     </nav>
   )
 }

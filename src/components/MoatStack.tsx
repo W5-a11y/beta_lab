@@ -60,12 +60,17 @@ const LAYERS = [
   },
 ] as const
 
-// Pyramid slab widths (% of pyramid column), L03 narrowest at top
-const SLAB_WIDTHS  = ['50%', '72%', '94%']
 // Row heights shared between pyramid slabs and right text rows
-const ROW_HEIGHTS  = [200, 160, 130]
-// Front-face depth strip (px) — drawn outside slab so it doesn't eat height
-const SLAB_DEPTH   = [16, 13, 10]
+const ROW_HEIGHTS = [200, 160, 130]
+// Total pyramid height = 490px
+// Taper: top edge 18% inset each side → bottom edge 1% inset each side
+// Boundaries at cumulative h fractions: 0 / 0.408 / 0.735 / 1.0
+// offset(h) = 18 - 17*h  →  insets: 18% / 11.1% / 5.5% / 1%
+const PYRAMID_CLIPS = [
+  'polygon(18% 0%, 82% 0%, 88.9% 100%, 11.1% 100%)',
+  'polygon(11.1% 0%, 88.9% 0%, 94.5% 100%, 5.5% 100%)',
+  'polygon(5.5% 0%, 94.5% 0%, 99% 100%, 1% 100%)',
+]
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
@@ -74,6 +79,16 @@ export default function MoatStack() {
 
   return (
     <section id="companies" className="relative w-full bg-black py-32 overflow-hidden">
+      {/* Corner glows — top-right */}
+      <div className="pointer-events-none absolute -top-60 -right-60 w-[900px] h-[900px] rounded-full" style={{
+        background: 'radial-gradient(circle, rgba(0,50,98,0.28) 0%, transparent 65%)',
+        filter: 'blur(90px)',
+      }}/>
+      {/* Corner glows — bottom-left */}
+      <div className="pointer-events-none absolute -bottom-60 -left-60 w-[800px] h-[800px] rounded-full" style={{
+        background: 'radial-gradient(circle, rgba(0,50,98,0.22) 0%, transparent 65%)',
+        filter: 'blur(100px)',
+      }}/>
       <style>{`
         .pyramid-slab {
           position: relative;
@@ -92,7 +107,7 @@ export default function MoatStack() {
         <h2 className="text-4xl lg:text-5xl font-extrabold tracking-tight text-white mb-4">
           A New Category Between Research Labs and Data Companies
         </h2>
-        <p className="text-sm max-w-lg mx-auto" style={{ color: 'rgba(255,255,255,0.3)' }}>
+        <p className="text-sm max-w-lg mx-auto" style={{ color: 'rgba(255,255,255,0.4)' }}>
           One integrated infrastructure that others cannot replicate.
         </p>
       </div>
@@ -101,66 +116,65 @@ export default function MoatStack() {
       <div className="max-w-6xl mx-auto px-8">
         <div style={{ display: 'flex', alignItems: 'flex-start', gap: 0 }}>
 
-          {/* ── Left: 3D Pyramid (40%) ── */}
-          <div style={{ width: '40%', flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          {/* ── Left: True pyramid (40%) ── */}
+          <div style={{ width: '40%', flexShrink: 0 }}>
             {LAYERS.map((layer, i) => (
               <div
                 key={layer.rank}
+                className={`pyramid-slab${active === i ? ' lifted' : ''}`}
                 style={{
                   width: '100%',
                   height: ROW_HEIGHTS[i],
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'flex-end',
-                  paddingBottom: 0,
+                  position: 'relative',
+                  clipPath: PYRAMID_CLIPS[i],
+                  cursor: 'default',
                 }}
+                onMouseEnter={() => setActive(i)}
+                onMouseLeave={() => setActive(null)}
               >
-                {/* Slab wrapper — lifts on hover */}
-                <div
-                  className={`pyramid-slab${active === i ? ' lifted' : ''}`}
-                  style={{ width: SLAB_WIDTHS[i] }}
-                  onMouseEnter={() => setActive(i)}
-                  onMouseLeave={() => setActive(null)}
-                >
-                  {/* Main face */}
+                {/* Fill face */}
+                <div style={{
+                  position: 'absolute', inset: 0,
+                  background: layer.topBg,
+                  boxShadow: layer.topGlow,
+                }}/>
+
+                {/* Bottom depth shadow */}
+                <div style={{
+                  position: 'absolute', bottom: 0, left: 0, right: 0, height: '35%',
+                  background: 'linear-gradient(to bottom, transparent, rgba(0,0,0,0.45))',
+                  pointerEvents: 'none',
+                }}/>
+
+                {/* Border outline — inset via box-shadow since clip-path hides border */}
+                <div style={{
+                  position: 'absolute', inset: 0,
+                  boxShadow: `inset 0 0 0 1px ${layer.border}`,
+                }}/>
+
+                {/* Top highlight for L03 */}
+                {i === 0 && (
                   <div style={{
-                    height: ROW_HEIGHTS[i] - SLAB_DEPTH[i] - 8,
-                    background: layer.topBg,
-                    border: `1px solid ${layer.border}`,
-                    borderBottom: 'none',
-                    boxShadow: layer.topGlow,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    position: 'relative',
-                  }}>
-                    {/* Top highlight for L03 */}
-                    {i === 0 && (
-                      <div style={{
-                        position: 'absolute',
-                        top: 0, left: '8%', right: '8%', height: 1,
-                        background: 'linear-gradient(to right, transparent, rgba(212,175,55,0.7), transparent)',
-                      }}/>
-                    )}
-                    <span style={{
-                      fontFamily: 'monospace',
-                      fontSize: 13,
-                      fontWeight: 700,
-                      letterSpacing: '0.2em',
-                      color: layer.rankColor,
-                    }}>
-                      {layer.rank}
-                    </span>
-                  </div>
-                  {/* Front-face depth strip */}
-                  <div style={{
-                    height: SLAB_DEPTH[i],
-                    background: layer.frontBg,
-                    borderLeft: `1px solid ${layer.border}`,
-                    borderRight: `1px solid ${layer.border}`,
-                    borderBottom: `1px solid ${layer.border}`,
+                    position: 'absolute',
+                    top: 8, left: '25%', right: '25%', height: 1,
+                    background: 'linear-gradient(to right, transparent, rgba(212,175,55,0.7), transparent)',
                   }}/>
+                )}
+
+                {/* Rank label */}
+                <div style={{
+                  position: 'absolute', inset: 0,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}>
+                  <span style={{
+                    fontFamily: 'monospace',
+                    fontSize: 13,
+                    fontWeight: 700,
+                    letterSpacing: '0.2em',
+                    color: layer.rankColor,
+                  }}>
+                    {layer.rank}
+                  </span>
                 </div>
               </div>
             ))}
