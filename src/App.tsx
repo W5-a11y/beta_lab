@@ -1,6 +1,4 @@
 import { useState } from 'react'
-import GlobalAtmosphere from './components/GlobalAtmosphere'
-import GridBackground from './components/GridBackground'
 import ConnectiveLine from './components/ConnectiveLine'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
@@ -14,11 +12,9 @@ export default function App() {
   const [entered, setEntered] = useState(false)
 
   return (
-    <div className="relative min-h-screen bg-black text-white">
+    <div style={{ minHeight: '100vh', background: '#F7F7F2', color: '#1A1A1A' }}>
       {!entered && <Opening onEnter={() => setEntered(true)} />}
-      <GridBackground />
       <ConnectiveLine />
-      <GlobalAtmosphere />
       <div className="relative z-10">
         <Navbar />
         <Hero />

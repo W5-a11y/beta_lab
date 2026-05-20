@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react'
-import RobotBlueprint from './RobotBlueprint'
 
 // ── KPI counter hook ──────────────────────────────────────────────────────────
 function useCountUp(target: number, duration = 1200, started: boolean) {
@@ -10,7 +9,6 @@ function useCountUp(target: number, duration = 1200, started: boolean) {
     const step = (ts: number) => {
       if (!start) start = ts
       const progress = Math.min((ts - start) / duration, 1)
-      // ease-out cubic
       const eased = 1 - Math.pow(1 - progress, 3)
       setVal(Math.round(eased * target))
       if (progress < 1) requestAnimationFrame(step)
@@ -20,184 +18,169 @@ function useCountUp(target: number, duration = 1200, started: boolean) {
   return val
 }
 
-// ── Animated KPI item ─────────────────────────────────────────────────────────
 interface KpiProps {
   val: string; label: string; delay: number; started: boolean
   numericTarget?: number; suffix?: string
 }
-
 function KpiItem({ val, label, delay, started, numericTarget, suffix = '' }: KpiProps) {
   const counted = useCountUp(numericTarget ?? 0, 1400, started && !!numericTarget)
   const display = numericTarget
-    ? (numericTarget >= 1000
-        ? counted.toLocaleString() + suffix
-        : counted + suffix)
+    ? (numericTarget >= 1000 ? counted.toLocaleString() + suffix : counted + suffix)
     : val
-
   return (
-    <div
-      className="flex flex-col gap-1.5"
-      style={{
-        opacity: started ? 1 : 0,
-        transform: started ? 'translateY(0)' : 'translateY(12px)',
-        transition: `opacity 0.5s ${delay}ms ease-out, transform 0.5s ${delay}ms ease-out`,
-      }}
-    >
-      <span className="text-xl font-bold text-white" style={{
-        fontVariantNumeric: 'tabular-nums',
-        transition: 'color 0.2s',
-      }}>
+    <div style={{
+      opacity: started ? 1 : 0,
+      transform: started ? 'translateY(0)' : 'translateY(10px)',
+      transition: `opacity 0.5s ${delay}ms ease-out, transform 0.5s ${delay}ms ease-out`,
+      display: 'flex', flexDirection: 'column', gap: 4,
+    }}>
+      <span style={{ fontSize: 20, fontWeight: 700, color: '#1A1A1A', fontVariantNumeric: 'tabular-nums' }}>
         {display}
       </span>
-      <span
-        className="text-[9px] tracking-[0.25em] uppercase font-mono"
-        style={{ color: 'rgba(255,255,255,0.5)' }}
-      >
+      <span style={{ fontSize: 9, letterSpacing: '0.22em', textTransform: 'uppercase', fontFamily: 'monospace', color: 'rgba(26,26,26,0.4)' }}>
         {label}
       </span>
     </div>
   )
 }
 
+// ── Hero ──────────────────────────────────────────────────────────────────────
 export default function Hero() {
   const [kpiStarted, setKpiStarted] = useState(false)
-  const kpiRef = useRef<HTMLDivElement>(null)
+  const kpiRef   = useRef<HTMLDivElement>(null)
+  const videoRef = useRef<HTMLVideoElement>(null)
 
+  // KPI trigger
   useEffect(() => {
     const el = kpiRef.current
     if (!el) return
-    const obs = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) { setKpiStarted(true); obs.disconnect() }
+    const obs = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) { setKpiStarted(true); obs.disconnect() }
     }, { threshold: 0.4 })
     obs.observe(el)
     return () => obs.disconnect()
   }, [])
 
   return (
-    <section id="hero" className="relative min-h-screen grid-bg flex items-center overflow-hidden pt-20">
+    <section
+      id="hero"
+      style={{
+        position: 'relative',
+        minHeight: '100vh',
+        background: '#F7F7F2',
+        display: 'flex',
+        alignItems: 'center',
+        overflow: 'hidden',
+        paddingTop: 56,
+      }}
+    >
+      {/* Subtle paper texture vignette */}
+      <div style={{
+        position: 'absolute', inset: 0, pointerEvents: 'none',
+        background: 'radial-gradient(ellipse 90% 80% at 62% 50%, transparent 40%, rgba(240,239,232,0.6) 100%)',
+      }}/>
 
-      {/* Deep blue glow — top-right */}
-      <div
-        className="absolute -top-60 -right-60 w-[900px] h-[900px] rounded-full pointer-events-none"
-        style={{
-          background: 'radial-gradient(circle, rgba(0,50,98,0.28) 0%, transparent 65%)',
-          filter: 'blur(90px)',
-        }}
-      />
+      <div style={{
+        position: 'relative', zIndex: 2,
+        maxWidth: 1200, margin: '0 auto', padding: '80px 40px',
+        width: '100%',
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr',
+        gap: 40,
+        alignItems: 'center',
+      }}
+      className="grid-cols-1 lg:grid-cols-2"
+      >
 
-      {/* Deep blue glow — bottom-left */}
-      <div
-        className="absolute -bottom-60 -left-60 w-[800px] h-[800px] rounded-full pointer-events-none"
-        style={{
-          background: 'radial-gradient(circle, rgba(0,50,98,0.22) 0%, transparent 65%)',
-          filter: 'blur(100px)',
-        }}
-      />
-
-      <div className="relative z-10 max-w-7xl mx-auto px-8 w-full grid grid-cols-1 lg:grid-cols-2 gap-16 items-center py-20">
-
-        {/* LEFT — Text */}
-        <div className="flex flex-col gap-8">
+        {/* ── LEFT: Text ── */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 28 }}>
 
           {/* Status badge */}
-          <div className="flex items-center gap-2">
-            <span
-              className="w-2 h-2 rounded-full animate-pulse"
-              style={{ background: '#3B82F6' }}
-            />
-            <span className="text-xs tracking-[0.2em] uppercase font-mono glow-blue-text">
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{
+              width: 6, height: 6, borderRadius: '50%',
+              background: '#2563EB', flexShrink: 0,
+              boxShadow: '0 0 0 3px rgba(37,99,235,0.15)',
+            }}/>
+            <span style={{
+              fontSize: 10, letterSpacing: '0.22em', textTransform: 'uppercase',
+              fontFamily: 'monospace', color: '#2563EB', fontWeight: 600,
+            }}>
               EST. 2024 · Berkeley, CA
             </span>
           </div>
 
           {/* Headline */}
-          <h1 className="text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight text-white">
+          <h1 style={{
+            fontSize: 'clamp(36px, 5vw, 58px)',
+            fontWeight: 800, lineHeight: 1.1,
+            letterSpacing: '-0.03em', color: '#1A1A1A', margin: 0,
+          }}>
             Building the{' '}
-            <span style={{ color: '#3B82F6' }}>Data-to-Deployment</span>
-            <br />
-            Loop for Embodied AI
+            <span style={{ color: '#2563EB' }}>Data-to-Deployment</span>
+            <br />Loop for Embodied AI
           </h1>
 
-          {/* Subheadline */}
-          <p className="text-base lg:text-lg leading-relaxed max-w-md" style={{ color: 'rgba(255,255,255,0.6)' }}>
+          {/* Sub */}
+          <p style={{
+            fontSize: 16, lineHeight: 1.75, maxWidth: 440,
+            color: 'rgba(26,26,26,0.6)', margin: 0,
+          }}>
             BETA Robotics Lab connects industry-grade robot data,{' '}
-            <span className="text-white/80 font-medium">automated annotation</span>,{' '}
-            world model training,{' '}
-            VLA policy evaluation, and{' '}
-            <span className="text-white/80 font-medium">real-world humanoid deployment</span>.
+            <strong style={{ color: '#1A1A1A', fontWeight: 600 }}>automated annotation</strong>,{' '}
+            world model training, VLA policy evaluation, and{' '}
+            <strong style={{ color: '#1A1A1A', fontWeight: 600 }}>real-world humanoid deployment</strong>.
           </p>
 
-          {/* CTA Buttons */}
-          <div className="flex flex-wrap gap-5 pt-2">
-            {/* Primary — blue glow */}
+          {/* CTAs */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, paddingTop: 4 }}>
+            {/* Primary — solid dark */}
             <a
               href="https://betaucb.org/"
-              target="_blank"
-              rel="noopener noreferrer"
+              target="_blank" rel="noopener noreferrer"
               style={{
-                position: 'relative',
-                padding: '11px 24px',
-                fontSize: 13,
-                fontFamily: 'monospace',
-                fontWeight: 600,
-                letterSpacing: '0.08em',
-                color: '#3B82F6',
-                background: 'rgba(59,130,246,0.08)',
-                border: '1px solid rgba(59,130,246,0.5)',
-                borderRadius: 2,
-                cursor: 'pointer',
-                transition: 'box-shadow 0.2s, border-color 0.2s, background 0.2s',
-                overflow: 'hidden',
-                textDecoration: 'none',
+                padding: '12px 26px', fontSize: 13, fontFamily: 'monospace',
+                fontWeight: 600, letterSpacing: '0.08em',
+                color: '#F7F7F2', background: '#1A1A1A',
+                border: 'none', borderRadius: 3, textDecoration: 'none',
                 display: 'inline-block',
+                transition: 'transform 0.18s ease, box-shadow 0.18s ease',
+                boxShadow: '0 2px 12px rgba(26,26,26,0.18)',
               }}
               onMouseEnter={e => {
-                const el = e.currentTarget
-                el.style.boxShadow = '0 0 18px rgba(59,130,246,0.3), inset 0 0 18px rgba(59,130,246,0.06)'
-                el.style.borderColor = 'rgba(59,130,246,0.9)'
-                el.style.background = 'rgba(59,130,246,0.13)'
+                const el = e.currentTarget as HTMLElement
+                el.style.transform = 'translateY(-2px) scale(1.02)'
+                el.style.boxShadow = '0 6px 24px rgba(26,26,26,0.22)'
               }}
               onMouseLeave={e => {
-                const el = e.currentTarget
-                el.style.boxShadow = 'none'
-                el.style.borderColor = 'rgba(59,130,246,0.5)'
-                el.style.background = 'rgba(59,130,246,0.08)'
+                const el = e.currentTarget as HTMLElement
+                el.style.transform = 'translateY(0) scale(1)'
+                el.style.boxShadow = '0 2px 12px rgba(26,26,26,0.18)'
               }}
             >
               Check BETA →
             </a>
 
-            {/* Secondary — white outline + gold hover glow */}
+            {/* Secondary — outline */}
             <a
               href="#contact"
               style={{
-                position: 'relative',
-                padding: '11px 24px',
-                fontSize: 13,
-                fontFamily: 'monospace',
-                fontWeight: 600,
-                letterSpacing: '0.08em',
-                color: 'rgba(255,255,255,0.6)',
-                background: 'transparent',
-                border: '1px solid rgba(255,255,255,0.2)',
-                borderRadius: 2,
-                cursor: 'pointer',
-                transition: 'color 0.2s, border-color 0.2s, box-shadow 0.2s',
-                overflow: 'hidden',
-                textDecoration: 'none',
-                display: 'inline-block',
+                padding: '12px 26px', fontSize: 13, fontFamily: 'monospace',
+                fontWeight: 600, letterSpacing: '0.08em',
+                color: '#1A1A1A', background: 'transparent',
+                border: '1px solid rgba(26,26,26,0.25)', borderRadius: 3,
+                textDecoration: 'none', display: 'inline-block',
+                transition: 'border-color 0.18s, transform 0.18s',
               }}
               onMouseEnter={e => {
-                const el = e.currentTarget
-                el.style.color = '#ffffff'
-                el.style.borderColor = 'rgba(255,255,255,0.7)'
-                el.style.boxShadow = '0 0 20px rgba(212,175,55,0.12), inset 0 0 24px rgba(212,175,55,0.06)'
+                const el = e.currentTarget as HTMLElement
+                el.style.borderColor = 'rgba(26,26,26,0.6)'
+                el.style.transform = 'translateY(-1px)'
               }}
               onMouseLeave={e => {
-                const el = e.currentTarget
-                el.style.color = 'rgba(255,255,255,0.6)'
-                el.style.borderColor = 'rgba(255,255,255,0.2)'
-                el.style.boxShadow = 'none'
+                const el = e.currentTarget as HTMLElement
+                el.style.borderColor = 'rgba(26,26,26,0.25)'
+                el.style.transform = 'translateY(0)'
               }}
             >
               Contact Us →
@@ -205,23 +188,89 @@ export default function Hero() {
           </div>
 
           {/* KPI strip */}
-          <div ref={kpiRef} className="flex gap-8 pt-4 border-t border-white/8 mt-2">
-            <KpiItem val="1,000h+" label="12-Month Dataset Target"     delay={0}   started={kpiStarted} numericTarget={1000} suffix="h+" />
-            <KpiItem val="80%↓"   label="Annotation Cost Reduction"   delay={120} started={kpiStarted} numericTarget={80}   suffix="%↓" />
-            <KpiItem val="G1"     label="Real-World Deployment"        delay={240} started={kpiStarted} />
-            <KpiItem val="H100"   label="Training & Inference Cluster" delay={360} started={kpiStarted} />
+          <div ref={kpiRef} style={{
+            display: 'flex', gap: 32, paddingTop: 20,
+            borderTop: '1px solid rgba(26,26,26,0.08)', marginTop: 4,
+          }}>
+            <KpiItem val="1,000h+" label="12-Month Dataset Target"   delay={0}   started={kpiStarted} numericTarget={1000} suffix="h+" />
+            <KpiItem val="80%↓"   label="Annotation Cost Reduction" delay={120} started={kpiStarted} numericTarget={80}   suffix="%↓" />
+            <KpiItem val="G1"     label="Real-World Deployment"      delay={240} started={kpiStarted} />
+            <KpiItem val="H100"   label="Training Cluster"           delay={360} started={kpiStarted} />
           </div>
         </div>
 
-        {/* RIGHT — Robot Blueprint */}
-        <RobotBlueprint />
+        {/* ── RIGHT: Particle video sphere ── */}
+        <div style={{
+          position: 'relative',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          minHeight: 420,
+        }}>
+          {/* Video container — bleeds right on desktop */}
+          <div style={{
+            position: 'relative',
+            width: '120%',
+            maxWidth: 680,
+            marginRight: '-15%',
+            borderRadius: 8,
+            overflow: 'hidden',
+          }}>
+            <video
+              ref={videoRef}
+              src="/planet_remix_scene.mp4"
+              autoPlay muted loop playsInline
+              style={{
+                width: '100%',
+                display: 'block',
+                // mix-blend-mode multiply makes black bg invisible on cream
+                mixBlendMode: 'multiply',
+                // Slight contrast boost so particles stay vivid
+                filter: 'contrast(1.1) brightness(0.92)',
+              }}
+            />
 
+            {/* Bottom fade — cream gradient mask */}
+            <div style={{
+              position: 'absolute', bottom: 0, left: 0, right: 0, height: '38%',
+              background: 'linear-gradient(to bottom, transparent, #F7F7F2)',
+              pointerEvents: 'none',
+            }}/>
+            {/* Right fade */}
+            <div style={{
+              position: 'absolute', top: 0, right: 0, bottom: 0, width: '25%',
+              background: 'linear-gradient(to right, transparent, #F7F7F2)',
+              pointerEvents: 'none',
+            }}/>
+            {/* Left fade */}
+            <div style={{
+              position: 'absolute', top: 0, left: 0, bottom: 0, width: '12%',
+              background: 'linear-gradient(to left, transparent, #F7F7F2)',
+              pointerEvents: 'none',
+            }}/>
+            {/* Top fade */}
+            <div style={{
+              position: 'absolute', top: 0, left: 0, right: 0, height: '20%',
+              background: 'linear-gradient(to top, transparent, #F7F7F2)',
+              pointerEvents: 'none',
+            }}/>
+          </div>
+
+          {/* Floating label */}
+          <div style={{
+            position: 'absolute', bottom: 24, left: 0,
+            fontFamily: 'monospace', fontSize: 9,
+            letterSpacing: '0.2em', color: 'rgba(26,26,26,0.3)',
+            textTransform: 'uppercase',
+          }}>
+            EMBODIED_INTELLIGENCE · NEURAL CORE
+          </div>
+        </div>
       </div>
-      {/* Bottom gradient fade */}
+
+      {/* Bottom fade to next section */}
       <div style={{
-        position: 'absolute', bottom: 0, left: 0, right: 0, height: 160,
-        background: 'linear-gradient(to bottom, transparent, #000)',
-        pointerEvents: 'none', zIndex: 5,
+        position: 'absolute', bottom: 0, left: 0, right: 0, height: 120,
+        background: 'linear-gradient(to bottom, transparent, #F7F7F2)',
+        pointerEvents: 'none', zIndex: 3,
       }}/>
     </section>
   )

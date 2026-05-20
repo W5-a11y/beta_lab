@@ -54,13 +54,14 @@ export default function Navbar() {
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         padding: '0 24px',
         height: 56,
-        background: 'rgba(0,0,0,0.88)',
-        backdropFilter: 'blur(12px)',
+        background: 'rgba(247,247,242,0.92)',
+        backdropFilter: 'blur(14px)',
+        borderBottom: '1px solid rgba(26,26,26,0.07)',
       }}>
         {/* Scan line */}
         <div style={{
           position: 'absolute', bottom: 0, left: 0, right: 0, height: 1,
-          background: 'rgba(59,130,246,0.10)', pointerEvents: 'none',
+          background: 'rgba(26,26,26,0.06)', pointerEvents: 'none',
         }}/>
 
         {/* Logo */}
@@ -68,7 +69,7 @@ export default function Navbar() {
           <img src="/beta.svg" alt="BETA" style={{ width: 28, height: 28 }} />
           <span style={{
             fontFamily: 'monospace', fontSize: 11, fontWeight: 700,
-            letterSpacing: '0.22em', color: 'rgba(255,255,255,0.7)',
+            letterSpacing: '0.22em', color: 'rgba(26,26,26,0.65)',
           }}>
             BETA Robotics Lab
           </span>
@@ -87,11 +88,11 @@ export default function Navbar() {
                   position: 'relative',
                   fontFamily: 'sans-serif', fontSize: 11, fontWeight: 600,
                   letterSpacing: '0.14em', textDecoration: 'none',
-                  color: isActive ? '#ffffff' : 'rgba(255,255,255,0.45)',
+                  color: isActive ? '#1A1A1A' : 'rgba(26,26,26,0.45)',
                   transition: 'color 0.15s', paddingBottom: 4,
                 }}
-                onMouseEnter={e => { if (!isActive) (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.75)' }}
-                onMouseLeave={e => { if (!isActive) (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.45)' }}
+                onMouseEnter={e => { if (!isActive) (e.currentTarget as HTMLElement).style.color = 'rgba(26,26,26,0.8)' }}
+                onMouseLeave={e => { if (!isActive) (e.currentTarget as HTMLElement).style.color = 'rgba(26,26,26,0.45)' }}
               >
                 {label}
                 {isActive && (
@@ -121,15 +122,15 @@ export default function Navbar() {
           aria-label="Toggle menu"
         >
           <motion.span animate={{ rotate: menuOpen ? 45 : 0, y: menuOpen ? 7 : 0 }}
-            style={{ display: 'block', width: 20, height: 1.5, background: 'rgba(255,255,255,0.75)', transformOrigin: 'center' }}
+            style={{ display: 'block', width: 20, height: 1.5, background: 'rgba(26,26,26,0.75)', transformOrigin: 'center' }}
             transition={{ duration: 0.2 }}
           />
           <motion.span animate={{ opacity: menuOpen ? 0 : 1 }}
-            style={{ display: 'block', width: 20, height: 1.5, background: 'rgba(255,255,255,0.75)' }}
+            style={{ display: 'block', width: 20, height: 1.5, background: 'rgba(26,26,26,0.75)' }}
             transition={{ duration: 0.15 }}
           />
           <motion.span animate={{ rotate: menuOpen ? -45 : 0, y: menuOpen ? -7 : 0 }}
-            style={{ display: 'block', width: 20, height: 1.5, background: 'rgba(255,255,255,0.75)', transformOrigin: 'center' }}
+            style={{ display: 'block', width: 20, height: 1.5, background: 'rgba(26,26,26,0.75)', transformOrigin: 'center' }}
             transition={{ duration: 0.2 }}
           />
         </button>
@@ -145,9 +146,9 @@ export default function Navbar() {
             transition={{ duration: 0.2, ease: 'easeOut' }}
             style={{
               position: 'fixed', top: 56, left: 0, right: 0, zIndex: 49,
-              background: 'rgba(0,0,0,0.96)',
+              background: 'rgba(247,247,242,0.98)',
               backdropFilter: 'blur(16px)',
-              borderBottom: '1px solid rgba(59,130,246,0.12)',
+              borderBottom: '1px solid rgba(26,26,26,0.08)',
               display: 'flex', flexDirection: 'column',
             }}
           >
@@ -162,9 +163,9 @@ export default function Navbar() {
                 style={{
                   fontFamily: 'monospace', fontSize: 12, fontWeight: 600,
                   letterSpacing: '0.2em', textDecoration: 'none',
-                  color: active === label ? '#ffffff' : 'rgba(255,255,255,0.5)',
+                  color: active === label ? '#1A1A1A' : 'rgba(26,26,26,0.5)',
                   padding: '16px 28px',
-                  borderBottom: '1px solid rgba(255,255,255,0.05)',
+                  borderBottom: '1px solid rgba(26,26,26,0.06)',
                   display: 'flex', alignItems: 'center', gap: 12,
                 }}
               >

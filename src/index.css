@@ -5,35 +5,28 @@ html {
 }
 
 :root {
-  --ca-blue: #3B82F6;
-  --ca-gold: #FDB515;
+  --cream:    #F7F7F2;
+  --ink:      #1A1A1A;
+  --ink-60:   rgba(26,26,26,0.6);
+  --ink-35:   rgba(26,26,26,0.35);
+  --blue:     #2563EB;
+  --blue-dim: rgba(37,99,235,0.65);
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
-  background: #000000;
-  color: #ffffff;
+  background: var(--cream);
+  color: var(--ink);
   -webkit-font-smoothing: antialiased;
 }
 
-/* Blue glow text — used on "Human Layer" and status badge */
-.glow-blue-text {
-  color: #3B82F6;
-  text-shadow:
-    0 0 12px rgba(59, 130, 246, 0.7),
-    0 0 28px rgba(59, 130, 246, 0.35),
-    0 0 50px rgba(59, 130, 246, 0.15);
-}
+/* keep grid-bg class but make it cream-safe (now unused by GridBackground) */
+.grid-bg { background: var(--cream); }
 
-/* Grid background — very faint, PublicAI-style */
-.grid-bg {
-  background-image:
-    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-  background-size: 50px 50px;
+/* Status badge glow — adapted to cream */
+.glow-blue-text {
+  color: var(--blue);
 }
