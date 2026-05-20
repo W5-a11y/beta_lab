@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import {
   motion, AnimatePresence,
-  useMotionValue, useSpring, useAnimationFrame,
+  useMotionValue, useSpring, useAnimationFrame, useInView,
 } from 'framer-motion'
+import SectionArrow from './SectionArrow'
 
 // ── Constants ────────────────────────────────────────────────────────────────
 
@@ -59,8 +60,10 @@ const PANEL_W    = 228
 // ── Component ────────────────────────────────────────────────────────────────
 
 export default function BetaLoop() {
-  const wrapRef = useRef<HTMLDivElement>(null)
-  const svgRef  = useRef<SVGSVGElement>(null)
+  const wrapRef   = useRef<HTMLDivElement>(null)
+  const svgRef    = useRef<SVGSVGElement>(null)
+  const inViewRef = useRef<HTMLDivElement>(null)
+  const isInView  = useInView(inViewRef, { once: true, margin: '-15%' })
 
   // Mouse parallax
   const mx = useMotionValue(0)
@@ -199,7 +202,12 @@ export default function BetaLoop() {
       }}/>
 
       {/* Header */}
-      <div className="absolute top-16 left-0 right-0 flex flex-col items-center z-20 pointer-events-none">
+      <motion.div
+        className="absolute top-16 left-0 right-0 flex flex-col items-center z-20 pointer-events-none"
+        initial={{ opacity: 0, y: -16 }}
+        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: -16 }}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      >
         <p className="font-mono text-[10px] tracking-[0.3em] uppercase"
           style={{ color: 'rgba(59,130,246,0.6)' }}>
           [ 01 / THE_BETA_LOOP ]
@@ -210,11 +218,19 @@ export default function BetaLoop() {
         <p className="mt-3 text-sm max-w-md text-center" style={{ color: 'rgba(255,255,255,0.5)' }}>
           A closed-loop flywheel — from real-world data collection to deployed policy and back.
         </p>
-      </div>
+      </motion.div>
 
       {/* ── SVG orbit ── */}
-      <div style={{ perspective: '1100px' }}>
-        <motion.div style={{ rotateX: sY, rotateY: sX }}>
+      <div ref={inViewRef} style={{ perspective: '1100px', marginTop: 48 }}>
+        <motion.div
+          style={{ rotateX: sY, rotateY: sX }}
+          initial={{ opacity: 0, scale: 0.88, filter: 'blur(16px)' }}
+          animate={isInView
+            ? { opacity: 1, scale: 1, filter: 'blur(0px)' }
+            : { opacity: 0, scale: 0.88, filter: 'blur(16px)' }
+          }
+          transition={{ duration: 1.0, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
+        >
           <svg
             ref={svgRef}
             viewBox="0 0 840 800"
@@ -464,6 +480,18 @@ export default function BetaLoop() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Bottom gradient fade → next section */}
+      <div style={{
+        position: 'absolute', bottom: 0, left: 0, right: 0, height: 140,
+        background: 'linear-gradient(to bottom, transparent, #000)',
+        pointerEvents: 'none', zIndex: 15,
+      }}/>
+
+      {/* Exit arrow */}
+      <div style={{ position: 'absolute', bottom: 32, left: 0, right: 0, display: 'flex', justifyContent: 'center', zIndex: 20 }}>
+        <SectionArrow href="#pillars" />
+      </div>
     </section>
   )
 }

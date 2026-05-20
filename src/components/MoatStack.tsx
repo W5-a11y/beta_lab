@@ -1,5 +1,6 @@
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useRef, useState } from 'react'
+import { motion, AnimatePresence, useInView } from 'framer-motion'
+import SectionArrow from './SectionArrow'
 
 // ── Data ──────────────────────────────────────────────────────────────────────
 
@@ -76,9 +77,11 @@ const PYRAMID_CLIPS = [
 
 export default function MoatStack() {
   const [active, setActive] = useState<number | null>(null)
+  const sectionRef = useRef<HTMLElement>(null)
+  const isInView   = useInView(sectionRef, { once: true, margin: '-12%' })
 
   return (
-    <section id="companies" className="relative w-full bg-black py-32 overflow-hidden">
+    <section ref={sectionRef} id="companies" className="relative w-full bg-black py-32 overflow-hidden">
       {/* Corner glows — top-right */}
       <div className="pointer-events-none absolute -top-60 -right-60 w-[900px] h-[900px] rounded-full" style={{
         background: 'radial-gradient(circle, rgba(0,50,98,0.28) 0%, transparent 65%)',
@@ -99,21 +102,42 @@ export default function MoatStack() {
       `}</style>
 
       {/* Section header */}
-      <div className="max-w-6xl mx-auto px-8 mb-20 text-center">
+      <motion.div
+        className="max-w-6xl mx-auto px-8 mb-20 text-center"
+        initial={{ opacity: 0, y: -20 }}
+        animate={isInView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      >
         <p className="font-mono text-[10px] tracking-[0.3em] uppercase mb-4"
            style={{ color: 'rgba(59,130,246,0.5)' }}>
           [ 02 / RESEARCH_MOAT ]
         </p>
-        <h2 className="text-4xl lg:text-5xl font-extrabold tracking-tight text-white mb-4">
+        <motion.h2
+          className="text-4xl lg:text-5xl font-extrabold tracking-tight text-white mb-4"
+          initial={{ opacity: 0, y: 14 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.65, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
+        >
           A New Category Between Research Labs and Data Companies
-        </h2>
-        <p className="text-sm max-w-lg mx-auto" style={{ color: 'rgba(255,255,255,0.4)' }}>
+        </motion.h2>
+        <motion.p
+          className="text-sm max-w-lg mx-auto"
+          style={{ color: 'rgba(255,255,255,0.4)' }}
+          initial={{ opacity: 0, y: 8 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.22, ease: [0.22, 1, 0.36, 1] }}
+        >
           One integrated infrastructure that others cannot replicate.
-        </p>
-      </div>
+        </motion.p>
+      </motion.div>
 
       {/* Main layout: pyramid left + text right */}
-      <div className="max-w-6xl mx-auto px-8">
+      <motion.div
+        className="max-w-6xl mx-auto px-8"
+        initial={{ opacity: 0, y: 30 }}
+        animate={isInView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+      >
         <div style={{ display: 'flex', alignItems: 'flex-start', gap: 0 }}>
 
           {/* ── Left: True pyramid (40%) ── */}
@@ -295,6 +319,18 @@ export default function MoatStack() {
             CAPABILITY DEPTH →
           </span>
         </div>
+      </motion.div>
+
+      {/* Bottom gradient fade */}
+      <div style={{
+        position: 'absolute', bottom: 0, left: 0, right: 0, height: 120,
+        background: 'linear-gradient(to bottom, transparent, #000)',
+        pointerEvents: 'none', zIndex: 5,
+      }}/>
+
+      {/* Exit arrow */}
+      <div style={{ display: 'flex', justifyContent: 'center', marginTop: 40, position: 'relative', zIndex: 10 }}>
+        <SectionArrow href="#contact" />
       </div>
     </section>
   )

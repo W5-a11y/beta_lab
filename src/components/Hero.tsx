@@ -1,6 +1,78 @@
+import { useEffect, useRef, useState } from 'react'
 import RobotBlueprint from './RobotBlueprint'
 
+// ── KPI counter hook ──────────────────────────────────────────────────────────
+function useCountUp(target: number, duration = 1200, started: boolean) {
+  const [val, setVal] = useState(0)
+  useEffect(() => {
+    if (!started) return
+    let start: number | null = null
+    const step = (ts: number) => {
+      if (!start) start = ts
+      const progress = Math.min((ts - start) / duration, 1)
+      // ease-out cubic
+      const eased = 1 - Math.pow(1 - progress, 3)
+      setVal(Math.round(eased * target))
+      if (progress < 1) requestAnimationFrame(step)
+    }
+    requestAnimationFrame(step)
+  }, [started, target, duration])
+  return val
+}
+
+// ── Animated KPI item ─────────────────────────────────────────────────────────
+interface KpiProps {
+  val: string; label: string; delay: number; started: boolean
+  numericTarget?: number; suffix?: string
+}
+
+function KpiItem({ val, label, delay, started, numericTarget, suffix = '' }: KpiProps) {
+  const counted = useCountUp(numericTarget ?? 0, 1400, started && !!numericTarget)
+  const display = numericTarget
+    ? (numericTarget >= 1000
+        ? counted.toLocaleString() + suffix
+        : counted + suffix)
+    : val
+
+  return (
+    <div
+      className="flex flex-col gap-1.5"
+      style={{
+        opacity: started ? 1 : 0,
+        transform: started ? 'translateY(0)' : 'translateY(12px)',
+        transition: `opacity 0.5s ${delay}ms ease-out, transform 0.5s ${delay}ms ease-out`,
+      }}
+    >
+      <span className="text-xl font-bold text-white" style={{
+        fontVariantNumeric: 'tabular-nums',
+        transition: 'color 0.2s',
+      }}>
+        {display}
+      </span>
+      <span
+        className="text-[9px] tracking-[0.25em] uppercase font-mono"
+        style={{ color: 'rgba(255,255,255,0.5)' }}
+      >
+        {label}
+      </span>
+    </div>
+  )
+}
+
 export default function Hero() {
+  const [kpiStarted, setKpiStarted] = useState(false)
+  const kpiRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const el = kpiRef.current
+    if (!el) return
+    const obs = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) { setKpiStarted(true); obs.disconnect() }
+    }, { threshold: 0.4 })
+    obs.observe(el)
+    return () => obs.disconnect()
+  }, [])
+
   return (
     <section id="hero" className="relative min-h-screen grid-bg flex items-center overflow-hidden pt-20">
 
@@ -133,23 +205,11 @@ export default function Hero() {
           </div>
 
           {/* KPI strip */}
-          <div className="flex gap-8 pt-4 border-t border-white/8 mt-2">
-            {[
-              { val: '1,000h+', label: '12-Month Dataset Target' },
-              { val: '80%↓',   label: 'Annotation Cost Reduction' },
-              { val: 'G1',     label: 'Real-World Deployment' },
-              { val: 'H100',   label: 'Training & Inference Cluster' },
-            ].map(({ val, label }) => (
-              <div key={label} className="flex flex-col gap-1.5">
-                <span className="text-xl font-bold text-white">{val}</span>
-                <span
-                  className="text-[9px] tracking-[0.25em] uppercase font-mono"
-                  style={{ color: 'rgba(255,255,255,0.5)' }}
-                >
-                  {label}
-                </span>
-              </div>
-            ))}
+          <div ref={kpiRef} className="flex gap-8 pt-4 border-t border-white/8 mt-2">
+            <KpiItem val="1,000h+" label="12-Month Dataset Target"     delay={0}   started={kpiStarted} numericTarget={1000} suffix="h+" />
+            <KpiItem val="80%↓"   label="Annotation Cost Reduction"   delay={120} started={kpiStarted} numericTarget={80}   suffix="%↓" />
+            <KpiItem val="G1"     label="Real-World Deployment"        delay={240} started={kpiStarted} />
+            <KpiItem val="H100"   label="Training & Inference Cluster" delay={360} started={kpiStarted} />
           </div>
         </div>
 
@@ -157,6 +217,12 @@ export default function Hero() {
         <RobotBlueprint />
 
       </div>
+      {/* Bottom gradient fade */}
+      <div style={{
+        position: 'absolute', bottom: 0, left: 0, right: 0, height: 160,
+        background: 'linear-gradient(to bottom, transparent, #000)',
+        pointerEvents: 'none', zIndex: 5,
+      }}/>
     </section>
   )
 }

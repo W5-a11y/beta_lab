@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import GlobalAtmosphere from './components/GlobalAtmosphere'
+import GridBackground from './components/GridBackground'
+import ConnectiveLine from './components/ConnectiveLine'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import BetaLoop from './components/BetaLoop'
@@ -14,6 +16,8 @@ export default function App() {
   return (
     <div className="relative min-h-screen bg-black text-white">
       {!entered && <Opening onEnter={() => setEntered(true)} />}
+      <GridBackground />
+      <ConnectiveLine />
       <GlobalAtmosphere />
       <div className="relative z-10">
         <Navbar />

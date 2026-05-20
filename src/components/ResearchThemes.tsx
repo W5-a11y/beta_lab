@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { useState } from 'react'
+import SectionArrow from './SectionArrow'
 
 const THEMES = [
   {
@@ -77,22 +78,41 @@ export default function ResearchThemes() {
   const [hovered, setHovered] = useState<string | null>(null)
 
   return (
-    <section id="pillars" className="relative py-32 px-8 overflow-hidden">
+    <section id="pillars" className="relative py-32 px-8 overflow-hidden bg-black">
 
       {/* Section header */}
-      <div className="max-w-7xl mx-auto mb-20 text-center">
+      <motion.div
+        className="max-w-7xl mx-auto mb-20 text-center"
+        initial={{ opacity: 0, y: -18 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-10%' }}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      >
         <p className="font-mono text-[10px] tracking-[0.3em] uppercase mb-4"
           style={{ color: 'rgba(59,130,246,0.6)' }}>
           [ 02 / RESEARCH_THEMES ]
         </p>
-        <h2 className="text-4xl lg:text-5xl font-extrabold tracking-tight text-white mb-5">
+        <motion.h2
+          className="text-4xl lg:text-5xl font-extrabold tracking-tight text-white mb-5"
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-10%' }}
+          transition={{ duration: 0.65, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+        >
           Three Interconnected Research Pillars
-        </h2>
-        <p className="text-base max-w-xl mx-auto" style={{ color: 'rgba(255,255,255,0.45)' }}>
+        </motion.h2>
+        <motion.p
+          className="text-base max-w-xl mx-auto"
+          style={{ color: 'rgba(255,255,255,0.45)' }}
+          initial={{ opacity: 0, y: 8 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-10%' }}
+          transition={{ duration: 0.6, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+        >
           Each theme feeds the next — annotation unlocks training,
           training unlocks evaluation, evaluation closes the loop.
-        </p>
-      </div>
+        </motion.p>
+      </motion.div>
 
       {/* Card flow */}
       <div className="max-w-7xl mx-auto relative">
@@ -217,6 +237,17 @@ export default function ResearchThemes() {
             )
           })}
         </div>
+      </div>
+      {/* Bottom gradient fade */}
+      <div style={{
+        position: 'absolute', bottom: 0, left: 0, right: 0, height: 120,
+        background: 'linear-gradient(to bottom, transparent, #000)',
+        pointerEvents: 'none', zIndex: 5,
+      }}/>
+
+      {/* Exit arrow */}
+      <div style={{ display: 'flex', justifyContent: 'center', marginTop: 48, position: 'relative', zIndex: 10 }}>
+        <SectionArrow href="#companies" />
       </div>
     </section>
   )
