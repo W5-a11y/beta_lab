@@ -498,7 +498,7 @@ export default function BetaLoop() {
       }}/>
 
       {/* Exit arrow */}
-      <div style={{ position: 'absolute', bottom: 32, left: 0, right: 0, display: 'flex', justifyContent: 'center', zIndex: 20 }}>
+      <div style={{ display: 'flex', justifyContent: 'center', paddingBottom: 48, position: 'relative', zIndex: 20 }}>
         <SectionArrow href="#pillars" />
       </div>
     </section>

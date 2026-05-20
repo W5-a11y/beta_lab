@@ -14,10 +14,24 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
+    const SECTION_MAP: { label: string; id: string }[] = [
+      { label: 'HOME',      id: 'hero' },
+      { label: 'LOOP',      id: 'loop' },
+      { label: 'PILLARS',   id: 'pillars' },
+      { label: 'COMPANIES', id: 'companies' },
+      { label: 'CONTACT',   id: 'contact' },
+    ]
     const onScroll = () => {
-      if (window.scrollY < 100) setActive('HOME')
+      const scrollMid = window.scrollY + window.innerHeight * 0.35
+      let current = 'HOME'
+      for (const { label, id } of SECTION_MAP) {
+        const el = document.getElementById(id)
+        if (el && el.offsetTop <= scrollMid) current = label
+      }
+      setActive(current)
     }
     window.addEventListener('scroll', onScroll, { passive: true })
+    onScroll()
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
