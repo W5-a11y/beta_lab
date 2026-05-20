@@ -4,6 +4,8 @@ import Hero from './components/Hero'
 import BetaLoop from './components/BetaLoop'
 import ResearchThemes from './components/ResearchThemes'
 import MoatStack from './components/MoatStack'
+import TeamMatrix from './components/TeamMatrix'
+import Footer from './components/Footer'
 
 export default function App() {
   return (
@@ -15,6 +17,8 @@ export default function App() {
         <BetaLoop />
         <ResearchThemes />
         <MoatStack />
+        <TeamMatrix />
+        <Footer />
       </div>
     </div>
   )
