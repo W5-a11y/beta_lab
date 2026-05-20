@@ -183,6 +183,16 @@ export default function BetaLoop() {
   // Shared active cluster — drives both loop highlights and pillar highlights
   const [activeCluster, setActiveCluster] = useState<Cluster | null>(null)
 
+  // Cross-module: ResourceMatrix can highlight clusters via CustomEvent
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const { cluster } = (e as CustomEvent).detail as { cluster: Cluster | null }
+      setActiveCluster(cluster)
+    }
+    window.addEventListener('betaloop:highlight', handler)
+    return () => window.removeEventListener('betaloop:highlight', handler)
+  }, [])
+
   // Mouse parallax
   const mx = useMotionValue(0)
   const my = useMotionValue(0)

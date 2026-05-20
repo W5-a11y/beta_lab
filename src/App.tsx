@@ -4,6 +4,7 @@ import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import BetaLoop from './components/BetaLoop'
 import MoatStack from './components/MoatStack'
+import ResourceMatrix from './components/ResourceMatrix'
 import Footer from './components/Footer'
 import Opening from './components/Opening'
 
@@ -19,6 +20,7 @@ export default function App() {
         <Hero />
         <BetaLoop />
         <MoatStack />
+        <ResourceMatrix />
         <Footer />
       </div>
     </div>
