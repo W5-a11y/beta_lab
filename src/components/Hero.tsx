@@ -202,15 +202,15 @@ export default function Hero() {
         {/* ── RIGHT: Particle video sphere ── */}
         <div style={{
           position: 'relative',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          minHeight: 420,
+          display: 'flex', alignItems: 'center', justifyContent: 'flex-end',
+          minHeight: 520,
         }}>
           {/* Video container — bleeds right on desktop */}
           <div style={{
             position: 'relative',
-            width: '120%',
-            maxWidth: 680,
-            marginRight: '-15%',
+            width: '195%',
+            maxWidth: 1100,
+            marginRight: '-45%',
             borderRadius: 8,
             overflow: 'hidden',
           }}>
@@ -254,15 +254,6 @@ export default function Hero() {
             }}/>
           </div>
 
-          {/* Floating label */}
-          <div style={{
-            position: 'absolute', bottom: 24, left: 0,
-            fontFamily: 'monospace', fontSize: 9,
-            letterSpacing: '0.2em', color: 'rgba(26,26,26,0.3)',
-            textTransform: 'uppercase',
-          }}>
-            EMBODIED_INTELLIGENCE · NEURAL CORE
-          </div>
         </div>
       </div>
 
