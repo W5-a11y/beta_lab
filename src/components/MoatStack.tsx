@@ -73,7 +73,7 @@ export default function MoatStack() {
   const [active, setActive] = useState<number | null>(null)
 
   return (
-    <section className="relative w-full bg-black py-32 overflow-hidden">
+    <section id="companies" className="relative w-full bg-black py-32 overflow-hidden">
       <style>{`
         .pyramid-slab {
           position: relative;

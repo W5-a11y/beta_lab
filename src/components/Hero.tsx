@@ -2,7 +2,7 @@ import RobotBlueprint from './RobotBlueprint'
 
 export default function Hero() {
   return (
-    <section className="relative min-h-screen grid-bg flex items-center overflow-hidden pt-20">
+    <section id="hero" className="relative min-h-screen grid-bg flex items-center overflow-hidden pt-20">
 
       {/* Deep blue glow — top-right */}
       <div
@@ -56,13 +56,80 @@ export default function Hero() {
           </p>
 
           {/* CTA Buttons */}
-          <div className="flex flex-wrap gap-6 pt-2">
-            <button className="px-6 py-3 text-sm font-medium tracking-wide rounded-lg bg-white text-black transition-opacity duration-200 hover:opacity-90">
-              Earn on Data Hub →
-            </button>
-            <button className="px-6 py-3 text-sm font-medium tracking-wide rounded-lg bg-transparent text-white border border-white/20 transition-all duration-200 hover:bg-white/10">
-              Research Deck →
-            </button>
+          <div className="flex flex-wrap gap-5 pt-2">
+            {/* Primary — blue glow */}
+            <a
+              href="https://betaucb.org/"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                position: 'relative',
+                padding: '11px 24px',
+                fontSize: 13,
+                fontFamily: 'monospace',
+                fontWeight: 600,
+                letterSpacing: '0.08em',
+                color: '#3B82F6',
+                background: 'rgba(59,130,246,0.08)',
+                border: '1px solid rgba(59,130,246,0.5)',
+                borderRadius: 2,
+                cursor: 'pointer',
+                transition: 'box-shadow 0.2s, border-color 0.2s, background 0.2s',
+                overflow: 'hidden',
+                textDecoration: 'none',
+                display: 'inline-block',
+              }}
+              onMouseEnter={e => {
+                const el = e.currentTarget
+                el.style.boxShadow = '0 0 18px rgba(59,130,246,0.3), inset 0 0 18px rgba(59,130,246,0.06)'
+                el.style.borderColor = 'rgba(59,130,246,0.9)'
+                el.style.background = 'rgba(59,130,246,0.13)'
+              }}
+              onMouseLeave={e => {
+                const el = e.currentTarget
+                el.style.boxShadow = 'none'
+                el.style.borderColor = 'rgba(59,130,246,0.5)'
+                el.style.background = 'rgba(59,130,246,0.08)'
+              }}
+            >
+              Check BETA →
+            </a>
+
+            {/* Secondary — white outline + gold hover glow */}
+            <a
+              href="#contact"
+              style={{
+                position: 'relative',
+                padding: '11px 24px',
+                fontSize: 13,
+                fontFamily: 'monospace',
+                fontWeight: 600,
+                letterSpacing: '0.08em',
+                color: 'rgba(255,255,255,0.6)',
+                background: 'transparent',
+                border: '1px solid rgba(255,255,255,0.2)',
+                borderRadius: 2,
+                cursor: 'pointer',
+                transition: 'color 0.2s, border-color 0.2s, box-shadow 0.2s',
+                overflow: 'hidden',
+                textDecoration: 'none',
+                display: 'inline-block',
+              }}
+              onMouseEnter={e => {
+                const el = e.currentTarget
+                el.style.color = '#ffffff'
+                el.style.borderColor = 'rgba(255,255,255,0.7)'
+                el.style.boxShadow = '0 0 20px rgba(212,175,55,0.12), inset 0 0 24px rgba(212,175,55,0.06)'
+              }}
+              onMouseLeave={e => {
+                const el = e.currentTarget
+                el.style.color = 'rgba(255,255,255,0.6)'
+                el.style.borderColor = 'rgba(255,255,255,0.2)'
+                el.style.boxShadow = 'none'
+              }}
+            >
+              Contact Us →
+            </a>
           </div>
 
           {/* KPI strip */}

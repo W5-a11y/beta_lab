@@ -169,6 +169,7 @@ export default function BetaLoop() {
   // ── Render ─────────────────────────────────────────────────────────────────
   return (
     <section
+      id="loop"
       ref={wrapRef}
       className="relative w-full bg-black flex flex-col items-center justify-center overflow-hidden"
       style={{ minHeight: '100vh' }}

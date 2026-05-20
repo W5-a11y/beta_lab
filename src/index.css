@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+html {
+  scroll-behavior: smooth;
+}
+
 :root {
   --ca-blue: #3B82F6;
   --ca-gold: #FDB515;

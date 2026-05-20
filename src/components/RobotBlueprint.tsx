@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
 
 // ── Swap image path here ───────────────────────────────────────────────────────
-const ROBOT_IMAGE = '/davinci-robot.png'
+const ROBOT_IMAGE = '/robot_vitruvian_transparent_vector.svg'
 
 // ── Label definitions ─────────────────────────────────────────────────────────
 // rotationFactor: multiplier vs. the base rotation (creates layered depth)

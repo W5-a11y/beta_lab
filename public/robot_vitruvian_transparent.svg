@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1600" height="1600" viewBox="0 0 1600 1600" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Vitruvian Robot Line Art</title>
+  <desc id="desc">Transparent-background SVG line art of a robot with open arms inside a circle. No black background rectangle is included.</desc>
+  <defs>
+    <style>
+      :root {
+        --line: #FFFFFF;
+        --accent: #FFFFFF;
+      }
+      .line {
+        fill: none;
+        stroke: var(--line);
+        stroke-width: 18;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        vector-effect: non-scaling-stroke;
+      }
+      .thin {
+        fill: none;
+        stroke: var(--line);
+        stroke-width: 10;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        vector-effect: non-scaling-stroke;
+      }
+      .dot {
+        fill: var(--accent);
+      }
+    </style>
+  </defs>
+
+  <!-- Transparent background: intentionally no <rect> fill/background -->
+
+  <!-- Vitruvian circle -->
+  <circle class="line" cx="800" cy="800" r="590"/>
+
+  <!-- subtle geometry guides -->
+  <line class="thin" x1="800" y1="210" x2="800" y2="1390" opacity="0.32"/>
+  <line class="thin" x1="210" y1="800" x2="1390" y2="800" opacity="0.32"/>
+  <circle class="thin" cx="800" cy="800" r="415" opacity="0.24"/>
+
+  <!-- Robot head -->
+  <rect class="line" x="650" y="310" width="300" height="245" rx="56"/>
+  <line class="thin" x1="800" y1="260" x2="800" y2="310"/>
+  <circle class="dot" cx="800" cy="245" r="18"/>
+  <circle class="dot" cx="730" cy="420" r="20"/>
+  <circle class="dot" cx="870" cy="420" r="20"/>
+  <path class="thin" d="M725 495 Q800 535 875 495"/>
+
+  <!-- Neck and torso -->
+  <path class="line" d="M720 560 L720 625"/>
+  <path class="line" d="M880 560 L880 625"/>
+  <path class="line" d="M620 630 L980 630 L1035 980 L565 980 Z"/>
+  <rect class="thin" x="705" y="700" width="190" height="150" rx="28"/>
+  <line class="thin" x1="660" y1="910" x2="940" y2="910"/>
+  <circle class="dot" cx="740" cy="775" r="10"/>
+  <circle class="dot" cx="800" cy="775" r="10"/>
+  <circle class="dot" cx="860" cy="775" r="10"/>
+
+  <!-- Arms, horizontal pair -->
+  <path class="line" d="M615 665 C485 670 365 700 250 750"/>
+  <path class="line" d="M985 665 C1115 670 1235 700 1350 750"/>
+  <circle class="thin" cx="585" cy="668" r="38"/>
+  <circle class="thin" cx="1015" cy="668" r="38"/>
+  <circle class="thin" cx="250" cy="750" r="32"/>
+  <circle class="thin" cx="1350" cy="750" r="32"/>
+
+  <!-- Arms, raised diagonal pair -->
+  <path class="line" d="M610 705 C475 600 380 485 295 335"/>
+  <path class="line" d="M990 705 C1125 600 1220 485 1305 335"/>
+  <circle class="thin" cx="295" cy="335" r="32"/>
+  <circle class="thin" cx="1305" cy="335" r="32"/>
+
+  <!-- Legs, standing pair -->
+  <path class="line" d="M705 980 C690 1135 640 1265 560 1390"/>
+  <path class="line" d="M895 980 C910 1135 960 1265 1040 1390"/>
+  <circle class="thin" cx="560" cy="1390" r="34"/>
+  <circle class="thin" cx="1040" cy="1390" r="34"/>
+
+  <!-- Legs, diagonal pair -->
+  <path class="line" d="M700 980 C610 1115 500 1215 350 1305"/>
+  <path class="line" d="M900 980 C990 1115 1100 1215 1250 1305"/>
+  <circle class="thin" cx="350" cy="1305" r="34"/>
+  <circle class="thin" cx="1250" cy="1305" r="34"/>
+
+  <!-- Joints -->
+  <circle class="thin" cx="705" cy="980" r="34"/>
+  <circle class="thin" cx="895" cy="980" r="34"/>
+  <circle class="thin" cx="800" cy="980" r="22"/>
+</svg>

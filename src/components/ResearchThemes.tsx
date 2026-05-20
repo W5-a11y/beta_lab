@@ -77,7 +77,7 @@ export default function ResearchThemes() {
   const [hovered, setHovered] = useState<string | null>(null)
 
   return (
-    <section className="relative py-32 px-8 overflow-hidden">
+    <section id="pillars" className="relative py-32 px-8 overflow-hidden">
 
       {/* Section header */}
       <div className="max-w-7xl mx-auto mb-20 text-center">

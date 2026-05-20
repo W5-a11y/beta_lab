@@ -1,31 +1,130 @@
+import { useState, useEffect } from 'react'
+
+const NAV_ITEMS = [
+  { label: 'HOME',      href: '#hero' },
+  { label: 'LOOP',      href: '#loop' },
+  { label: 'PILLARS',   href: '#pillars' },
+  { label: 'COMPANIES', href: '#companies' },
+  { label: 'CONTACT',   href: '#contact' },
+]
+
 export default function Navbar() {
+  const [active, setActive] = useState('HOME')
+
+  // Highlight nav item on scroll
+  useEffect(() => {
+    const onScroll = () => {
+      const y = window.scrollY
+      if (y < 100) setActive('HOME')
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 py-4 border-b border-white/10 backdrop-blur-md bg-black/60">
+    <nav style={{
+      position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50,
+      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+      padding: '0 32px',
+      height: 56,
+      background: 'rgba(0,0,0,0.82)',
+      backdropFilter: 'blur(12px)',
+      borderRadius: 0,
+    }}>
+
+      {/* Bottom scan line */}
+      <div style={{
+        position: 'absolute', bottom: 0, left: 0, right: 0, height: 1,
+        background: 'rgba(59,130,246,0.10)',
+        pointerEvents: 'none',
+      }}/>
+
       {/* Logo */}
-      <div className="flex items-center gap-3">
-        <img src="/beta.svg" alt="BETA" className="w-8 h-8" />
-        <span className="text-white font-semibold text-sm tracking-widest uppercase">
+      <a href="#hero" style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0, textDecoration: 'none' }}>
+        <img src="/beta.svg" alt="BETA" style={{ width: 28, height: 28 }} />
+        <span style={{
+          fontFamily: 'monospace', fontSize: 11, fontWeight: 700,
+          letterSpacing: '0.22em', color: 'rgba(255,255,255,0.7)',
+          textTransform: 'uppercase',
+        }}>
           BETA Robotics Lab
         </span>
+      </a>
+
+      {/* Nav items */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 36 }}>
+        {NAV_ITEMS.map(({ label, href }) => {
+          const isActive = active === label
+          return (
+            <a
+              key={label}
+              href={href}
+              onClick={() => setActive(label)}
+              style={{
+                position: 'relative',
+                fontFamily: 'sans-serif',
+                fontSize: 11,
+                fontWeight: 600,
+                letterSpacing: '0.14em',
+                textDecoration: 'none',
+                color: isActive ? '#ffffff' : 'rgba(255,255,255,0.45)',
+                transition: 'color 0.15s',
+                paddingBottom: 4,
+              }}
+              onMouseEnter={e => {
+                if (!isActive) (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.75)'
+              }}
+              onMouseLeave={e => {
+                if (!isActive) (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.45)'
+              }}
+            >
+              {label}
+              {/* Active indicator — inverted triangle */}
+              {isActive && (
+                <span style={{
+                  position: 'absolute',
+                  bottom: -8, left: '50%',
+                  transform: 'translateX(-50%)',
+                  width: 0, height: 0,
+                  borderLeft: '3px solid transparent',
+                  borderRight: '3px solid transparent',
+                  borderTop: '4px solid rgba(59,130,246,0.85)',
+                }}/>
+              )}
+            </a>
+          )
+        })}
       </div>
 
-      {/* Nav Links */}
-      <div className="hidden md:flex items-center gap-8">
-        {['Data Hub', 'Research', 'Team'].map((item) => (
-          <a
-            key={item}
-            href="#"
-            className="text-sm text-white/60 hover:text-white transition-colors duration-200 tracking-wide"
-          >
-            {item}
-          </a>
-        ))}
-      </div>
-
-      {/* CTA */}
+      {/* CTA — gold outline button */}
       <button
-        className="px-4 py-2 text-sm font-semibold tracking-wide rounded-sm transition-all duration-200 hover:brightness-110"
-        style={{ background: '#003262', color: '#ffffff' }}
+        style={{
+          padding: '7px 18px',
+          fontSize: 11,
+          fontFamily: 'monospace',
+          fontWeight: 700,
+          letterSpacing: '0.14em',
+          textTransform: 'uppercase',
+          color: 'rgba(212,175,55,0.9)',
+          background: 'transparent',
+          border: '1px solid rgba(212,175,55,0.45)',
+          borderRadius: 0,
+          cursor: 'pointer',
+          transition: 'border-color 0.18s, color 0.18s, box-shadow 0.18s',
+          flexShrink: 0,
+        }}
+        onMouseEnter={e => {
+          const el = e.currentTarget
+          el.style.borderColor = 'rgba(212,175,55,0.85)'
+          el.style.color = 'rgba(212,175,55,1)'
+          el.style.boxShadow = '0 0 12px rgba(212,175,55,0.2)'
+        }}
+        onMouseLeave={e => {
+          const el = e.currentTarget
+          el.style.borderColor = 'rgba(212,175,55,0.45)'
+          el.style.color = 'rgba(212,175,55,0.9)'
+          el.style.boxShadow = 'none'
+        }}
       >
         [ Book a Demo ]
       </button>
