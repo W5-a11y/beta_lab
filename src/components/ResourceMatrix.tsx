@@ -103,28 +103,28 @@ interface Res {
 
 const CARDS: Res[] = [
   {
-    ref: 'REF-RES-001', title: 'Industrial Partnership', metric: 'Eastworld',
-    desc: 'Strategic anchor partner for humanoid locomotion data.',
+    ref: 'REF-RES-001', title: 'Industrial Partnership', metric: 'Robotics company',
+    desc: 'Strategic anchor partner for diverse robot behavior data.',
     colSpan: 3, glass: false, wm: WM_CONN, highlight: 'autolabel', minH: 210,
   },
   {
     ref: 'REF-RES-002', title: 'Computing Power', metric: 'H100 · 1 000h+',
     desc: 'GPU cluster allocation for large-scale model training.',
-    colSpan: 3, glass: true, wm: WM_CHIP, highlight: null, minH: 210,
+    colSpan: 3, glass: false, wm: WM_CHIP, highlight: null, minH: 210,
   },
   {
-    ref: 'REF-RES-003', title: 'Global Connections', metric: 'PhD Network',
-    desc: 'PhDs, founders, and curated panel events.',
+    ref: 'REF-RES-003', title: 'Global Connections', metric: 'Academia Network',
+    desc: 'PhD researchers, Faculties, founders and panel events.',
     colSpan: 2, glass: false, wm: WM_CONN, highlight: null, minH: 172,
   },
   {
     ref: 'REF-RES-004', title: 'Data Infrastructure', metric: 'In-house Pipeline',
-    desc: 'VLM-automated annotation — end-to-end.',
+    desc: 'VLM-Automated Annotation for End-to-End System.',
     colSpan: 2, glass: false, wm: WM_CHIP, highlight: 'autolabel', minH: 172,
   },
   {
-    ref: 'REF-RES-005', title: 'Hardware Fleet', metric: 'Unitree G1',
-    desc: '43-DoF humanoid deployment platform.',
+    ref: 'REF-RES-005', title: 'Hardware Fleet', metric: 'Robot platform',
+    desc: '43-DoF Unitree G1 humanoid platform with supporting deployment hardware.',
     colSpan: 2, glass: false, wm: WM_JOINT, highlight: 'benchmark', minH: 172,
   },
   {
@@ -315,8 +315,8 @@ function Card({ card, i, isHovered, wmOp, onEnter, onLeave, isInView }: CardProp
 
       {/* Body */}
       <div className="relative z-10 flex-1 flex flex-col justify-end">
-        <p className="font-mono text-[8px] tracking-[0.16em] uppercase mb-2"
-          style={{ color: 'rgba(26,26,26,0.32)' }}>
+        <p className="font-mono text-[10px] tracking-[0.16em] uppercase mb-2 font-bold"
+          style={{ color: 'rgba(26,26,26,0.55)' }}>
           {card.title}
         </p>
 
