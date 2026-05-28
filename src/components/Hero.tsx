@@ -103,9 +103,17 @@ function KpiItem({ val, label, delay, started, numericTarget, suffix = '' }: Kpi
 export default function Hero() {
   const [kpiStarted,    setKpiStarted]    = useState(false)
   const [typingStarted, setTypingStarted] = useState(false)
+  const [isMobile,      setIsMobile]      = useState(false)
   const kpiRef    = useRef<HTMLDivElement>(null)
   const heroRef   = useRef<HTMLDivElement>(null)
   const videoRef  = useRef<HTMLVideoElement>(null)
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768)
+    check()
+    window.addEventListener('resize', check)
+    return () => window.removeEventListener('resize', check)
+  }, [])
 
   // Start typing when hero enters view
   useEffect(() => {
@@ -149,17 +157,50 @@ export default function Hero() {
         background: 'radial-gradient(ellipse 90% 80% at 62% 50%, transparent 40%, rgba(240,239,232,0.6) 100%)',
       }}/>
 
+      {/* Mobile: full-screen background video */}
+      {isMobile && (
+        <>
+          <video
+            src="/planet_remix_scene.mp4"
+            autoPlay muted loop playsInline
+            style={{
+              position: 'absolute',
+              inset: 0,
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              objectPosition: 'center 60%',
+              mixBlendMode: 'multiply',
+              filter: 'contrast(1.2) brightness(0.85) saturate(1.1)',
+              zIndex: 0,
+            }}
+          />
+          {/* Gradient overlay: opaque cream at top for text, open in center for sphere */}
+          <div style={{
+            position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none',
+            background: `
+              linear-gradient(
+                to bottom,
+                rgba(247,247,242,0.72) 0%,
+                rgba(247,247,242,0.20) 45%,
+                rgba(247,247,242,0.20) 68%,
+                rgba(247,247,242,0.80) 100%
+              )
+            `,
+          }}/>
+        </>
+      )}
+
       <div style={{
         position: 'relative', zIndex: 2,
-        maxWidth: 1200, margin: '0 auto', padding: '80px 40px',
+        maxWidth: 1200, margin: '0 auto',
+        padding: isMobile ? '48px 28px 56px' : '80px 40px',
         width: '100%',
         display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
-        gap: 40,
+        gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
+        gap: isMobile ? 0 : 40,
         alignItems: 'center',
-      }}
-      className="grid-cols-1 lg:grid-cols-2"
-      >
+      }}>
 
         {/* ── LEFT: Text ── */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 28 }}>
@@ -182,10 +223,10 @@ export default function Hero() {
 
           {/* Headline — typing effect */}
           <h1 style={{
-            fontSize: 'clamp(36px, 5vw, 58px)',
+            fontSize: isMobile ? 'clamp(30px, 8vw, 42px)' : 'clamp(36px, 5vw, 58px)',
             fontWeight: 800, lineHeight: 1.1,
             letterSpacing: '-0.03em', color: '#1A1A1A', margin: 0,
-            minHeight: '2.3em',
+            minHeight: isMobile ? undefined : '2.3em',
           }}>
             <TypingHeadline started={typingStarted} />
           </h1>
@@ -258,8 +299,14 @@ export default function Hero() {
 
           {/* KPI strip */}
           <div ref={kpiRef} style={{
-            display: 'flex', gap: 32, paddingTop: 20,
-            borderTop: '1px solid rgba(26,26,26,0.08)', marginTop: 4,
+            display: 'grid',
+            gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(4, auto)',
+            gap: isMobile ? '20px 0' : undefined,
+            columnGap: isMobile ? 0 : 32,
+            rowGap: isMobile ? 20 : 0,
+            paddingTop: 20,
+            borderTop: '1px solid rgba(26,26,26,0.08)',
+            marginTop: 4,
           }}>
             <KpiItem val="1,000h+" label="12-Month Dataset Target"   delay={0}   started={kpiStarted} numericTarget={1000} suffix="h+" />
             <KpiItem val="80%↓"   label="Annotation Cost Reduction" delay={120} started={kpiStarted} numericTarget={80}   suffix="%↓" />
@@ -268,62 +315,56 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* ── RIGHT: Particle video sphere ── */}
-        <div style={{
-          position: 'relative',
-          display: 'flex', alignItems: 'center', justifyContent: 'flex-end',
-          minHeight: 520,
-        }}>
-          {/* Video container — bleeds right on desktop */}
+        {/* ── RIGHT: Particle video sphere (desktop only) ── */}
+        {!isMobile && (
+          /* Desktop: bleeds right */
           <div style={{
             position: 'relative',
-            width: '195%',
-            maxWidth: 1100,
-            marginRight: '-45%',
-            borderRadius: 8,
-            overflow: 'hidden',
+            display: 'flex', alignItems: 'center', justifyContent: 'flex-end',
+            minHeight: 520,
           }}>
-            <video
-              ref={videoRef}
-              src="/planet_remix_scene.mp4"
-              autoPlay muted loop playsInline
-              style={{
-                width: '100%',
-                display: 'block',
-                // mix-blend-mode multiply makes black bg invisible on cream
-                mixBlendMode: 'multiply',
-                // Slight contrast boost so particles stay vivid
-                filter: 'contrast(1.1) brightness(0.92)',
-              }}
-            />
-
-            {/* Bottom fade — cream gradient mask */}
             <div style={{
-              position: 'absolute', bottom: 0, left: 0, right: 0, height: '38%',
-              background: 'linear-gradient(to bottom, transparent, #F7F7F2)',
-              pointerEvents: 'none',
-            }}/>
-            {/* Right fade */}
-            <div style={{
-              position: 'absolute', top: 0, right: 0, bottom: 0, width: '25%',
-              background: 'linear-gradient(to right, transparent, #F7F7F2)',
-              pointerEvents: 'none',
-            }}/>
-            {/* Left fade */}
-            <div style={{
-              position: 'absolute', top: 0, left: 0, bottom: 0, width: '12%',
-              background: 'linear-gradient(to left, transparent, #F7F7F2)',
-              pointerEvents: 'none',
-            }}/>
-            {/* Top fade */}
-            <div style={{
-              position: 'absolute', top: 0, left: 0, right: 0, height: '20%',
-              background: 'linear-gradient(to top, transparent, #F7F7F2)',
-              pointerEvents: 'none',
-            }}/>
+              position: 'relative',
+              width: '195%',
+              maxWidth: 1100,
+              marginRight: '-45%',
+              borderRadius: 8,
+              overflow: 'hidden',
+            }}>
+              <video
+                ref={videoRef}
+                src="/planet_remix_scene.mp4"
+                autoPlay muted loop playsInline
+                style={{
+                  width: '100%',
+                  display: 'block',
+                  mixBlendMode: 'multiply',
+                  filter: 'contrast(1.1) brightness(0.92)',
+                }}
+              />
+              <div style={{
+                position: 'absolute', bottom: 0, left: 0, right: 0, height: '38%',
+                background: 'linear-gradient(to bottom, transparent, #F7F7F2)',
+                pointerEvents: 'none',
+              }}/>
+              <div style={{
+                position: 'absolute', top: 0, right: 0, bottom: 0, width: '25%',
+                background: 'linear-gradient(to right, transparent, #F7F7F2)',
+                pointerEvents: 'none',
+              }}/>
+              <div style={{
+                position: 'absolute', top: 0, left: 0, bottom: 0, width: '12%',
+                background: 'linear-gradient(to left, transparent, #F7F7F2)',
+                pointerEvents: 'none',
+              }}/>
+              <div style={{
+                position: 'absolute', top: 0, left: 0, right: 0, height: '20%',
+                background: 'linear-gradient(to top, transparent, #F7F7F2)',
+                pointerEvents: 'none',
+              }}/>
+            </div>
           </div>
-
-        </div>
+        )}
       </div>
 
       {/* Bottom fade to next section */}

@@ -2,6 +2,32 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence, useInView } from 'framer-motion'
 import SectionArrow from './SectionArrow'
 
+// ── Scan label: mono text that types itself in when section enters view ────────
+function ScanLabel({ text, isInView, className, style }: {
+  text: string; isInView: boolean;
+  className?: string; style?: React.CSSProperties
+}) {
+  const [shown, setShown] = useState(0)
+  useEffect(() => {
+    if (!isInView) return
+    let i = 0
+    const iv = setInterval(() => {
+      i++
+      setShown(i)
+      if (i >= text.length) clearInterval(iv)
+    }, 32)
+    return () => clearInterval(iv)
+  }, [isInView, text])
+  return (
+    <p className={className} style={style}>
+      {text.slice(0, shown)}
+      {shown < text.length && (
+        <span style={{ opacity: 0.4, animation: 'none' }}>▌</span>
+      )}
+    </p>
+  )
+}
+
 // ── Geometry ──────────────────────────────────────────────────────────────────
 //
 //  SVG viewBox: 0 0 560 480  (center-x = 280)
@@ -33,6 +59,13 @@ import SectionArrow from './SectionArrow'
 
 const SVG_W = 560
 const SVG_H = 480
+
+// Left-edge midpoints of each tier face (SVG user-units) — used for mobile connectors
+const MOBILE_EXITS = [
+  { x: 198, y: 150 }, // L03
+  { x: 146, y: 270 }, // L02
+  { x: 86,  y: 410 }, // L01
+] as const
 
 // Index 0 = L03 (top/front), 1 = L02, 2 = L01 (bottom/back)
 const LAYERS = [
@@ -125,6 +158,47 @@ function ConnPath({ x1, y1, x2, y2, active, dimmed, color }: ConnLine) {
   )
 }
 
+function MobileConnPath({ x1, y1, x2, y2, active, dimmed, color, isInView, index }: ConnLine & { isInView: boolean; index: number }) {
+  const d = `M ${x1},${y1} C ${x1 - 20},${y1} ${x2 + 10},${y2} ${x2},${y2}`
+  const delay = 0.45 + index * 0.18
+  return (
+    <g style={{ opacity: dimmed ? 0.12 : 1, transition: 'opacity 0.3s' }}>
+      {/* Trace draws itself */}
+      <motion.path d={d} fill="none" stroke="rgba(26,26,26,0.08)" strokeWidth="1"
+        initial={{ pathLength: 0 }}
+        animate={isInView ? { pathLength: 1 } : { pathLength: 0 }}
+        transition={{ duration: 0.75, delay, ease: [0.22, 1, 0.36, 1] }}
+      />
+      {/* Colored dashes fade in after trace */}
+      <motion.path d={d} fill="none" stroke={color}
+        strokeWidth={active ? 1.2 : 0.8}
+        strokeOpacity={active ? 0.65 : 0.22}
+        strokeDasharray="4 4"
+        initial={{ opacity: 0 }}
+        animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+        transition={{ duration: 0.3, delay: delay + 0.65 }}
+        style={active ? { animation: 'conn-flow 1.1s linear infinite' } : undefined}
+      />
+      {/* Origin dot — appears when drawing starts */}
+      <motion.circle cx={x1} cy={y1} r="2.5"
+        fill={active ? color : 'rgba(26,26,26,0.22)'}
+        style={{ transition: 'fill 0.25s' }}
+        initial={{ scale: 0, opacity: 0 }}
+        animate={isInView ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
+        transition={{ duration: 0.22, delay }}
+      />
+      {/* Destination dot — appears when drawing ends */}
+      <motion.circle cx={x2} cy={y2} r="2"
+        fill={active ? color : 'rgba(26,26,26,0.22)'}
+        style={{ transition: 'fill 0.25s' }}
+        initial={{ scale: 0, opacity: 0 }}
+        animate={isInView ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
+        transition={{ duration: 0.22, delay: delay + 0.72 }}
+      />
+    </g>
+  )
+}
+
 // ── Main ──────────────────────────────────────────────────────────────────────
 
 export default function MoatStack() {
@@ -148,6 +222,9 @@ export default function MoatStack() {
   // ── Connector coordinates ──────────────────────────────────────────────────
 
   const [connectors, setConnectors] = useState<Array<{ x1:number; y1:number; x2:number; y2:number }>>([])
+  const [mobileConnectors, setMobileConnectors] = useState<Array<{ x1:number; y1:number; x2:number; y2:number }>>([])
+  const mobileContainerRef = useRef<HTMLDivElement>(null)
+  const mobileCardRefs = useRef<(HTMLDivElement | null)[]>([])
 
   const recalc = useCallback(() => {
     const svgEl  = svgRef.current
@@ -182,6 +259,44 @@ export default function MoatStack() {
     return () => { clearTimeout(t); obs.disconnect(); window.removeEventListener('resize', recalc) }
   }, [isInView, recalc])
 
+  const recalcMobile = useCallback(() => {
+    const svgEl  = svgRef.current
+    const contEl = mobileContainerRef.current
+    if (!svgEl || !contEl || !isMobile) return
+    const svgRect  = svgEl.getBoundingClientRect()
+    const contRect = contEl.getBoundingClientRect()
+    const scaleX   = svgRect.width  / SVG_W
+    const scaleY   = svgRect.height / SVG_H
+    const result = MOBILE_EXITS.map((ex, i) => {
+      const x1 = svgRect.left - contRect.left + ex.x * scaleX
+      const y1 = svgRect.top  - contRect.top  + ex.y * scaleY
+      const cardEl = mobileCardRefs.current[i]
+      let x2 = 0, y2 = y1
+      if (cardEl) {
+        const cr = cardEl.getBoundingClientRect()
+        x2 = cr.left - contRect.left
+        y2 = cr.top  - contRect.top + cr.height * 0.5
+      }
+      return { x1, y1, x2, y2 }
+    })
+    setMobileConnectors(result)
+  }, [isMobile])
+
+  useEffect(() => {
+    if (!isInView || !isMobile) return
+    const t   = setTimeout(recalcMobile, 200)
+    const obs = new ResizeObserver(recalcMobile)
+    if (mobileContainerRef.current) obs.observe(mobileContainerRef.current)
+    window.addEventListener('resize', recalcMobile)
+    return () => { clearTimeout(t); obs.disconnect(); window.removeEventListener('resize', recalcMobile) }
+  }, [isInView, isMobile, recalcMobile])
+
+  useEffect(() => {
+    if (!isMobile) return
+    const t = setTimeout(recalcMobile, 280)
+    return () => clearTimeout(t)
+  }, [active, isMobile, recalcMobile])
+
   // ── Ripple ────────────────────────────────────────────────────────────────
 
   const handlePolyEnter = (e: React.MouseEvent<SVGPolygonElement>, i: number) => {
@@ -193,6 +308,20 @@ export default function MoatStack() {
     const cy = (e.clientY - svgRect.top)  * (SVG_H / svgRect.height)
     setRipple({ i, cx, cy })
     setTimeout(() => setRipple(null), 900)
+  }
+
+  const handlePolyClick = (e: React.MouseEvent<SVGPolygonElement>, i: number) => {
+    const deactivating = active === i
+    setActive(deactivating ? null : i)
+    if (!deactivating) {
+      const svgEl = svgRef.current
+      if (!svgEl) return
+      const svgRect = svgEl.getBoundingClientRect()
+      const cx = (e.clientX - svgRect.left) * (SVG_W / svgRect.width)
+      const cy = (e.clientY - svgRect.top)  * (SVG_H / svgRect.height)
+      setRipple({ i, cx, cy })
+      setTimeout(() => setRipple(null), 900)
+    }
   }
 
   // ── Render ────────────────────────────────────────────────────────────────
@@ -229,10 +358,12 @@ export default function MoatStack() {
         animate={isInView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
       >
-        <p className="font-mono text-[10px] tracking-[0.35em] uppercase mb-4"
-          style={{ color: 'rgba(26,26,26,0.30)' }}>
-          [ 02 / RESEARCH_MOAT ]
-        </p>
+        <ScanLabel
+          text="[ 02 / RESEARCH_MOAT ]"
+          isInView={isInView}
+          className="font-mono text-[10px] tracking-[0.35em] uppercase mb-4"
+          style={{ color: 'rgba(26,26,26,0.30)' }}
+        />
         <h2 className="text-4xl lg:text-5xl font-extrabold tracking-tight mb-4"
           style={{ color: '#1A1A1A' }}>
           A New Category Between<br/>Research Labs and Data Companies
@@ -246,38 +377,255 @@ export default function MoatStack() {
       {/* ── Main layout ── */}
       <div className="max-w-6xl mx-auto px-8">
         {isMobile ? (
-          // ── Mobile ──────────────────────────────────────────────────────
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            {LAYERS.map((layer, i) => (
-              <motion.div
-                key={layer.rank}
-                initial={{ opacity: 0, y: 20 }}
-                animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.55, delay: i * 0.12, ease: [0.22, 1, 0.36, 1] }}
-                style={{
-                  background: layer.faceFill,
-                  border: `1px solid ${layer.stroke}`,
-                  borderLeft: `3px solid ${layer.accentColor}`,
-                  borderRadius: 4,
-                  padding: '16px 18px',
-                  backdropFilter: 'blur(8px)',
-                  WebkitBackdropFilter: 'blur(8px)',
-                }}
+          // ── Mobile: pyramid on top, tappable cards below ────────────────
+          <div ref={mobileContainerRef} style={{ position: 'relative' }}>
+
+            {/* Mobile connector overlay */}
+            <svg style={{
+              position: 'absolute', inset: 0,
+              width: '100%', height: '100%',
+              pointerEvents: 'none', overflow: 'visible', zIndex: 4,
+            }}>
+              {mobileConnectors.map((c, i) => (
+                <MobileConnPath key={i}
+                  x1={c.x1} y1={c.y1} x2={c.x2} y2={c.y2}
+                  active={active === i}
+                  dimmed={active !== null && active !== i}
+                  color={LAYERS[i].accentColor}
+                  isInView={isInView}
+                  index={i}
+                />
+              ))}
+            </svg>
+
+            {/* SVG Pyramid — full width, click-interactive */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              style={{ width: '100%', marginBottom: 16 }}
+            >
+              <svg
+                ref={svgRef}
+                viewBox={`0 0 ${SVG_W} ${SVG_H}`}
+                style={{ width: '100%', height: 'auto', overflow: 'visible', display: 'block' }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-                  <span style={{ fontFamily: "'Roboto Mono',monospace", fontSize: 10, fontWeight: 800,
-                    letterSpacing: '0.14em', color: layer.rankColor }}>{layer.rank}</span>
-                  <span style={{ fontFamily: "'Roboto Mono',monospace", fontSize: 7.5,
-                    letterSpacing: '0.16em', color: 'rgba(26,26,26,0.32)', textTransform: 'uppercase' as const }}>
-                    {layer.type}
-                  </span>
-                </div>
-                <h3 style={{ fontFamily: 'Inter,system-ui,sans-serif', fontSize: 16, fontWeight: 700,
-                  color: '#1A1A1A', marginBottom: 6 }}>{layer.label}</h3>
-                <p style={{ fontFamily: 'Inter,system-ui,sans-serif', fontSize: 11, lineHeight: 1.65,
-                  color: 'rgba(26,26,26,0.50)', margin: 0 }}>{layer.caption}</p>
-              </motion.div>
-            ))}
+                <defs>
+                  <filter id="glow-l03-m" x="-20%" y="-20%" width="140%" height="140%">
+                    <feGaussianBlur stdDeviation="5" result="b"/>
+                    <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+                  </filter>
+                  {LAYERS.map(layer => (
+                    <clipPath key={layer.rank} id={`clip-m-${layer.rank}`}>
+                      <polygon points={layer.face}/>
+                    </clipPath>
+                  ))}
+                  <linearGradient id="face-m-l03" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%"   stopColor="rgba(150,210,248,0.60)"/>
+                    <stop offset="100%" stopColor="rgba(186,230,253,0.72)"/>
+                  </linearGradient>
+                  <linearGradient id="face-m-l02" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%"   stopColor="rgba(232,228,190,0.55)"/>
+                    <stop offset="100%" stopColor="rgba(245,245,220,0.68)"/>
+                  </linearGradient>
+                  <linearGradient id="face-m-l01" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%"   stopColor="rgba(226,224,220,0.55)"/>
+                    <stop offset="100%" stopColor="rgba(240,240,238,0.68)"/>
+                  </linearGradient>
+                  <linearGradient id="shelf-m-l03" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%"   stopColor="rgba(225,245,255,0.90)"/>
+                    <stop offset="100%" stopColor="rgba(200,238,255,0.75)"/>
+                  </linearGradient>
+                  <linearGradient id="shelf-m-l02" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%"   stopColor="rgba(255,255,242,0.90)"/>
+                    <stop offset="100%" stopColor="rgba(248,248,228,0.75)"/>
+                  </linearGradient>
+                  <linearGradient id="shelf-m-l01" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%"   stopColor="rgba(255,255,255,0.90)"/>
+                    <stop offset="100%" stopColor="rgba(248,248,244,0.75)"/>
+                  </linearGradient>
+                </defs>
+
+                {[...LAYERS].reverse().map((layer, ri) => {
+                  const i        = LAYERS.length - 1 - ri
+                  const isActive = active === i
+                  const isDimmed = active !== null && !isActive
+                  const rank     = layer.rank.toLowerCase()
+                  const delay    = 0.15 + ri * 0.18
+
+                  return (
+                    <motion.g
+                      key={layer.rank}
+                      initial={{ opacity: 0, y: 36 }}
+                      animate={isInView
+                        ? { opacity: isDimmed ? 0.42 : 1, y: 0 }
+                        : { opacity: 0, y: 36 }}
+                      transition={{
+                        opacity: { duration: 0.65, delay, ease: [0.22, 1, 0.36, 1] },
+                        y:       { duration: 0.65, delay, ease: [0.22, 1, 0.36, 1] },
+                      }}
+                    >
+                      <polygon
+                        points={layer.shelf}
+                        fill={`url(#shelf-m-${rank})`}
+                        stroke={layer.stroke}
+                        strokeWidth="0.6"
+                        style={{ pointerEvents: 'none' }}
+                      />
+                      <motion.polygon
+                        points={layer.face}
+                        fill={`url(#face-m-${rank})`}
+                        stroke={layer.stroke}
+                        strokeWidth={isActive ? 1.4 : 0.7}
+                        filter={isActive && i === 0 ? 'url(#glow-l03-m)' : 'none'}
+                        animate={{ fillOpacity: isActive ? 1 : 0.88 }}
+                        transition={{ duration: 0.25 }}
+                        style={{ cursor: 'pointer', transition: 'filter 0.3s' }}
+                        onClick={e => handlePolyClick(e as unknown as React.MouseEvent<SVGPolygonElement>, i)}
+                      />
+                      <line
+                        x1={parseFloat(layer.face.split(' ')[3].split(',')[0]) + 6}
+                        y1={parseFloat(layer.face.split(' ')[3].split(',')[1]) + 4}
+                        x2={parseFloat(layer.face.split(' ')[2].split(',')[0]) - 6}
+                        y2={parseFloat(layer.face.split(' ')[2].split(',')[1]) + 4}
+                        stroke="rgba(255,255,255,0.70)"
+                        strokeWidth="1"
+                        opacity={isActive ? 0.95 : 0.50}
+                        style={{ pointerEvents: 'none', transition: 'opacity 0.25s' }}
+                      />
+                      {ripple && ripple.i === i && (
+                        <circle
+                          cx={ripple.cx} cy={ripple.cy}
+                          fill="none"
+                          stroke={layer.accentColor}
+                          strokeWidth="1"
+                          strokeOpacity="0.4"
+                          clipPath={`url(#clip-m-${layer.rank})`}
+                          style={{ animation: 'ripple-out 0.9s ease-out forwards' }}
+                        />
+                      )}
+                      <text
+                        x={SVG_W / 2} y={layer.exitY + 4}
+                        textAnchor="middle"
+                        fontFamily="'Roboto Mono','JetBrains Mono',monospace"
+                        fontSize={i === 0 ? 13 : 11}
+                        fontWeight="800" letterSpacing="0.18em"
+                        fill={layer.rankColor}
+                        style={{ pointerEvents: 'none' }}
+                      >
+                        {layer.rank}
+                      </text>
+                      <text
+                        x={SVG_W / 2} y={layer.exitY + 22}
+                        textAnchor="middle"
+                        fontFamily="Inter,'Helvetica Neue',system-ui,sans-serif"
+                        fontSize={i === 0 ? 11 : 9.5}
+                        fontWeight="600"
+                        fill="rgba(26,26,26,0.62)"
+                        style={{ pointerEvents: 'none' }}
+                      >
+                        {layer.label}
+                      </text>
+                    </motion.g>
+                  )
+                })}
+              </svg>
+            </motion.div>
+
+            {/* Cards below — highlight synced with pyramid tap */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 12 }}>
+              {LAYERS.map((layer, i) => {
+                const isActive = active === i
+                const isDimmed = active !== null && !isActive
+                return (
+                  <motion.div
+                    key={layer.rank}
+                    ref={el => { mobileCardRefs.current[i] = el }}
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={isInView
+                      ? { opacity: isDimmed ? 0.35 : 1, y: 0 }
+                      : { opacity: 0, y: 16 }}
+                    transition={{ duration: 0.55, delay: 0.3 + i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+                    onClick={() => setActive(prev => prev === i ? null : i)}
+                    style={{
+                      background:   layer.faceFill,
+                      border:       `1px solid ${isActive ? layer.stroke : 'rgba(26,26,26,0.08)'}`,
+                      borderLeft:   `3px solid ${layer.accentColor}${isActive ? '' : '55'}`,
+                      borderRadius: 4,
+                      padding:      '14px 16px',
+                      cursor:       'pointer',
+                      transition:   'border-color 0.25s, opacity 0.3s',
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
+                      <span style={{
+                        fontFamily: "'Roboto Mono',monospace", fontSize: 10, fontWeight: 800,
+                        letterSpacing: '0.14em',
+                        color: isActive ? layer.rankColor : 'rgba(26,26,26,0.35)',
+                        transition: 'color 0.25s',
+                      }}>
+                        {layer.rank}
+                      </span>
+                      <span style={{
+                        fontFamily: "'Roboto Mono',monospace", fontSize: 7.5,
+                        letterSpacing: '0.16em', color: 'rgba(26,26,26,0.28)',
+                        textTransform: 'uppercase' as const,
+                      }}>
+                        {layer.type}
+                      </span>
+                    </div>
+                    <h3 style={{
+                      fontFamily: 'Inter,system-ui,sans-serif', fontSize: 15, fontWeight: 700,
+                      color: '#1A1A1A', marginBottom: 6, lineHeight: 1.25,
+                    }}>
+                      {layer.label}
+                    </h3>
+                    <p style={{
+                      fontFamily: 'Inter,system-ui,sans-serif', fontSize: 11, lineHeight: 1.65,
+                      color: 'rgba(26,26,26,0.50)', margin: 0,
+                    }}>
+                      {layer.caption}
+                    </p>
+                    <AnimatePresence>
+                      {isActive && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          exit={{ opacity: 0, height: 0, transition: { duration: 0.16 } }}
+                          transition={{ duration: 0.26, ease: [0.22, 1, 0.36, 1] }}
+                          style={{ overflow: 'hidden' }}
+                        >
+                          <div style={{
+                            display: 'flex', flexDirection: 'column', gap: 4,
+                            paddingTop: 10, marginTop: 10,
+                            borderTop: '1px solid rgba(26,26,26,0.07)',
+                          }}>
+                            {layer.details.map(({ key, val }) => (
+                              <div key={key} style={{ display: 'flex', alignItems: 'baseline', gap: 7 }}>
+                                <span style={{
+                                  fontFamily: "'Roboto Mono',monospace", fontSize: 8, fontWeight: 700,
+                                  letterSpacing: '0.10em', color: layer.accentColor,
+                                  textTransform: 'uppercase' as const, flexShrink: 0,
+                                }}>
+                                  {key}
+                                </span>
+                                <span style={{ fontFamily: 'monospace', fontSize: 8, color: 'rgba(26,26,26,0.28)' }}>→</span>
+                                <span style={{
+                                  fontFamily: "'Roboto Mono',monospace", fontSize: 10,
+                                  color: '#1A1A1A', letterSpacing: '0.02em',
+                                }}>
+                                  {val}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </motion.div>
+                )
+              })}
+            </div>
           </div>
         ) : (
           // ── Desktop: pyramid + annotations ──────────────────────────────
