@@ -4,6 +4,16 @@ html {
   scroll-behavior: smooth;
 }
 
+@keyframes betaCursorBlink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+@keyframes betaDotPulse {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(37,99,235,0.15); transform: scale(1); }
+  50%      { box-shadow: 0 0 0 6px rgba(37,99,235,0.08); transform: scale(1.25); }
+}
+
 :root {
   --cream:    #F7F7F2;
   --ink:      #1A1A1A;

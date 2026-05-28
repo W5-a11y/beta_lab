@@ -256,13 +256,13 @@ export default function Opening({ onEnter }: OpeningProps) {
           zIndex:         10,
         }}>
 
-          {/* ── Layer 2: beta logo, blue parts → #3B82F6 ── */}
+          {/* ── Layer 2: beta logo (original colors) ── */}
           <div style={{
             marginBottom:  32,
             pointerEvents: 'none',
             width:         'clamp(120px, 18vw, 220px)',
           }}>
-            <img src="/beta-logo-opening.png" alt="beta" style={{ width: '100%', display: 'block' }} />
+            <img src="/beta.svg" alt="beta" style={{ width: '100%', display: 'block' }} />
           </div>
 
 

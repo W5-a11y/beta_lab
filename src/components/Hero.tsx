@@ -1,5 +1,60 @@
 import { useEffect, useRef, useState } from 'react'
 
+// ── Typing headline segments ──────────────────────────────────────────────────
+const HEADLINE_SEGMENTS = [
+  { text: 'Building the ',        color: '#1A1A1A',  blue: false },
+  { text: 'Data-to-Deployment',   color: '#2563EB',  blue: true  },
+  { text: '\nLoop for Embodied AI', color: '#1A1A1A', blue: false },
+]
+const FULL_TEXT = HEADLINE_SEGMENTS.map(s => s.text).join('')
+
+function useTyping(started: boolean, speed = 38) {
+  const [count, setCount] = useState(0)
+  const [done, setDone] = useState(false)
+  useEffect(() => {
+    if (!started) return
+    if (count >= FULL_TEXT.length) { setDone(true); return }
+    const t = setTimeout(() => setCount(c => c + 1), speed)
+    return () => clearTimeout(t)
+  }, [started, count, speed])
+  return { count, done }
+}
+
+function TypingHeadline({ started }: { started: boolean }) {
+  const { count, done } = useTyping(started)
+  let rendered = 0
+  const parts = HEADLINE_SEGMENTS.map((seg, i) => {
+    const segStart = rendered
+    const segEnd   = rendered + seg.text.length
+    rendered       = segEnd
+    const visible  = seg.text.slice(0, Math.max(0, count - segStart))
+    if (!visible) return null
+    const lines = visible.split('\n')
+    return lines.map((line, li) => (
+      <span key={`${i}-${li}`}>
+        {li > 0 && <br />}
+        <span style={{ color: seg.color }}>{line}</span>
+      </span>
+    ))
+  })
+  return (
+    <>
+      {parts}
+      {/* Blinking cursor */}
+      <span style={{
+        display: 'inline-block',
+        width: 3, height: '0.85em',
+        background: '#2563EB',
+        marginLeft: 4,
+        verticalAlign: 'middle',
+        borderRadius: 1,
+        animation: done ? 'betaCursorBlink 1.1s step-start infinite' : 'none',
+        opacity: done ? 1 : 1,
+      }} />
+    </>
+  )
+}
+
 // ── KPI counter hook ──────────────────────────────────────────────────────────
 function useCountUp(target: number, duration = 1200, started: boolean) {
   const [val, setVal] = useState(0)
@@ -46,9 +101,22 @@ function KpiItem({ val, label, delay, started, numericTarget, suffix = '' }: Kpi
 
 // ── Hero ──────────────────────────────────────────────────────────────────────
 export default function Hero() {
-  const [kpiStarted, setKpiStarted] = useState(false)
-  const kpiRef   = useRef<HTMLDivElement>(null)
-  const videoRef = useRef<HTMLVideoElement>(null)
+  const [kpiStarted,    setKpiStarted]    = useState(false)
+  const [typingStarted, setTypingStarted] = useState(false)
+  const kpiRef    = useRef<HTMLDivElement>(null)
+  const heroRef   = useRef<HTMLDivElement>(null)
+  const videoRef  = useRef<HTMLVideoElement>(null)
+
+  // Start typing when hero enters view
+  useEffect(() => {
+    const el = heroRef.current
+    if (!el) return
+    const obs = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) { setTypingStarted(true); obs.disconnect() }
+    }, { threshold: 0.2 })
+    obs.observe(el)
+    return () => obs.disconnect()
+  }, [])
 
   // KPI trigger
   useEffect(() => {
@@ -64,6 +132,7 @@ export default function Hero() {
   return (
     <section
       id="hero"
+      ref={heroRef}
       style={{
         position: 'relative',
         minHeight: '100vh',
@@ -101,6 +170,7 @@ export default function Hero() {
               width: 6, height: 6, borderRadius: '50%',
               background: '#2563EB', flexShrink: 0,
               boxShadow: '0 0 0 3px rgba(37,99,235,0.15)',
+              animation: 'betaDotPulse 2.4s ease-in-out infinite',
             }}/>
             <span style={{
               fontSize: 10, letterSpacing: '0.22em', textTransform: 'uppercase',
@@ -110,15 +180,14 @@ export default function Hero() {
             </span>
           </div>
 
-          {/* Headline */}
+          {/* Headline — typing effect */}
           <h1 style={{
             fontSize: 'clamp(36px, 5vw, 58px)',
             fontWeight: 800, lineHeight: 1.1,
             letterSpacing: '-0.03em', color: '#1A1A1A', margin: 0,
+            minHeight: '2.3em',
           }}>
-            Building the{' '}
-            <span style={{ color: '#2563EB' }}>Data-to-Deployment</span>
-            <br />Loop for Embodied AI
+            <TypingHeadline started={typingStarted} />
           </h1>
 
           {/* Sub */}
