@@ -203,7 +203,7 @@ export default function Opening({ onEnter }: OpeningProps) {
           position:       'fixed',
           inset:          0,
           zIndex:         100,
-          background:     '#F7F7F2',
+          background:     'linear-gradient(to bottom, #F7F7F2 0%, #F5F4EE 30%, #C8D9F8 62%, #7AABF7 100%)',
           display:        'flex',
           flexDirection:  'column',
           alignItems:     'center',
@@ -223,6 +223,22 @@ export default function Opening({ onEnter }: OpeningProps) {
           backgroundSize:  '36px 36px',
         }}/>
 
+        {/* ── Layer 1: Barely-visible blurred background trace ── */}
+        <div style={{
+          position:      'absolute',
+          top:           '42%',
+          left:          '50%',
+          transform:     'translateX(-50%)',
+          width:         '70%',
+          maxWidth:      700,
+          pointerEvents: 'none',
+          zIndex:        1,
+          opacity:       0.045,
+          filter:        'blur(48px)',
+        }}>
+          <img src="/beta.png" alt="" style={{ width: '100%', display: 'block' }} />
+        </div>
+
         {/* Guide lines (phase 2) */}
         <GuideLines visible={phase === 'lines'} />
 
@@ -232,9 +248,23 @@ export default function Opening({ onEnter }: OpeningProps) {
           flexDirection:  'column',
           alignItems:     'center',
           gap:            0,
-          position:       'relative',
+          position:       'absolute',
+          top:            '50%',
+          left:           '50%',
+          transform:      'translate(-50%, -50%)',
+          width:          '100%',
           zIndex:         10,
         }}>
+
+          {/* ── Layer 2: beta logo, blue parts → #3B82F6 ── */}
+          <div style={{
+            marginBottom:  32,
+            pointerEvents: 'none',
+            width:         'clamp(120px, 18vw, 220px)',
+          }}>
+            <img src="/beta-logo-opening.png" alt="beta" style={{ width: '100%', display: 'block' }} />
+          </div>
+
 
           {/* Phase 1: Loading dot + percentage */}
           <AnimatePresence>
